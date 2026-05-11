@@ -10,12 +10,11 @@ namespace TaskManager.Controllers
     [ApiController]
     public class TaskController : ControllerBase
     {
-        private TaskService _service;
+        private readonly ITaskService _service;
 
-
-        public TaskController()
+        public TaskController(ITaskService service)
         {
-            _service = new TaskService();
+            _service = service;
         }
 
         [HttpGet]
@@ -30,7 +29,7 @@ namespace TaskManager.Controllers
         public ActionResult<ReadTaskDto> GetById(int id)
         {
             //return _items.Where(i => i.Id == id).ToList();
-            var task = _service.GetById(id);
+            var task = _service.GetTaskById(id);
 
             if( task != null) {
                 var taskDto = new ReadTaskDto()

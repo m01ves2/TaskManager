@@ -3,7 +3,7 @@ using TaskManager.Models;
 
 namespace TaskManager.Services
 {
-    public class TaskService
+    public class TaskService : ITaskService
     {
         private static int _nextId = 1;
 
@@ -25,7 +25,7 @@ namespace TaskManager.Services
         };
 
         public List<TaskItem> GetAllTasks() => _items;
-        public TaskItem? GetById(int id) => _items.FirstOrDefault(i => i.Id == id);
+        public TaskItem? GetTaskById(int id) => _items.FirstOrDefault(i => i.Id == id);
 
         public TaskItem CreateTask(TaskItem item)
         {

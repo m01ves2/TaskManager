@@ -1,15 +1,18 @@
+using TaskManager.Services;
+
 var builder = WebApplication.CreateBuilder(args);
 
-//// Add services to the container.
+// Add services to the container.
+builder.Services.AddScoped<ITaskService, TaskService>();
 
 builder.Services.AddControllers();
-//// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 //builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-//// Configure the HTTP request pipeline.
+// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment()) {
     app.UseSwagger();
     app.UseSwaggerUI();
@@ -21,40 +24,7 @@ if (app.Environment.IsDevelopment()) {
 
 app.MapControllers();
 
-//app.Use(async (context, next) =>
-//{
-//    Console.WriteLine("Request started");
-
-//    await next();
-
-//    Console.WriteLine("Request finished");
-//});
-
-//app.Use(async (HttpContext context, RequestDelegate next) =>
-//{
-//    Console.WriteLine("Middleware 1 BEFORE");
-
-//    await next(context);
-
-//    Console.WriteLine("Middleware 1 AFTER");
-//});
-
-//app.Use(async (HttpContext context, RequestDelegate next) =>
-//{
-//    Console.WriteLine("Middleware 2 BEFORE");
-
-//    await next(context);
-
-//    Console.WriteLine("Middleware 2 AFTER");
-//});
-
-//app.Run(async context =>
-//{
-//    Console.WriteLine("Endpoint");
-
-//    await context.Response.WriteAsync("Hello");
-//});
-
+//Middleware
 app.Use(async (context, next) =>
 {
     Console.WriteLine("=== REQUEST START ===");
