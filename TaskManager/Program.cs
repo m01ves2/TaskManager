@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using TaskManager.Data;
 using TaskManager.Middleware;
+using TaskManager.Models;
 using TaskManager.Rspositories;
 using TaskManager.Services;
 
@@ -8,7 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddScoped<ILoggerService, LoggerService>();
-builder.Services.AddScoped<ITaskRepository,  TaskRepository>();
+builder.Services.AddScoped<ITaskRepository, TaskRepository>();
 builder.Services.AddScoped<ITaskService, TaskService>();
 
 builder.Services.AddDbContext<AppDbContext>(options =>
@@ -28,6 +29,9 @@ if (app.Environment.IsDevelopment()) {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+SeedDatabase(app);
+
 
 //app.UseHttpsRedirection();
 
@@ -54,3 +58,18 @@ app.Use(async (context, next) =>
 
 app.MapControllers();
 app.Run();
+
+static void SeedDatabase(WebApplication app)
+{
+    using var scope = app.Services.CreateScope();
+    var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
+    if (!context.Tasks.Any()) {
+        context.Tasks.AddRange(
+            new TaskItem { Title = "Learn ASP.NET Core", IsCompleted = false },
+            new TaskItem { Title = "Learn Controllers", IsCompleted = true }
+        );
+
+        context.SaveChanges();
+    }
+}

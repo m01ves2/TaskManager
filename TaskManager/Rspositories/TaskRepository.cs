@@ -6,24 +6,6 @@ namespace TaskManager.Rspositories
 {
     public class TaskRepository : ITaskRepository
     {
-        //private static int _nextId = 1;
-        //private static List<TaskItem> _items = new()
-        //{
-        //    new TaskItem
-        //    {
-        //        Id = _nextId++,
-        //        Title = "Learn ASP.NET Core",
-        //        IsCompleted = false
-        //    },
-
-        //    new TaskItem
-        //    {
-        //        Id = _nextId++,
-        //        Title = "Learn Controllers",
-        //        IsCompleted = true
-        //    }
-        //};
-
         private readonly AppDbContext _context;
 
         public TaskRepository(AppDbContext context)
