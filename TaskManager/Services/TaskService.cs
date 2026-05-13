@@ -6,32 +6,36 @@ namespace TaskManager.Services
 {
     public class TaskService : ITaskService
     {
-        private ITaskRepository _repository;
-        private Guid _id = Guid.NewGuid();
-        public Guid GetId() => _id;
+        private readonly ITaskRepository _repository;
 
         public TaskService(ITaskRepository repository)
         {
-            Console.WriteLine("TaskService created");
             _repository = repository;
         }
 
-        public List<TaskItem> GetAllTasks() => _repository.GetAllTasks();
-        public TaskItem? GetTaskById(int id) => _repository.GetTaskById(id);
-
-        public TaskItem CreateTask(TaskItem item)
+        public async Task<List<TaskItem>> GetAllTasks()
         {
-            return _repository.CreateTask(item);
-        }
-        public TaskItem? UpdateTask(TaskItem changedItem)
-        {
-            return (_repository.UpdateTask(changedItem));
+            return await _repository.GetAllTasks();
         }
 
-        public TaskItem? DeleteTask(int id)
+        public async Task<TaskItem?> GetTaskById(int id)
         {
-            return _repository.DeleteTask(id);
+            return await _repository.GetTaskById(id);
         }
 
+        public async Task<TaskItem> CreateTask(TaskItem item)
+        {
+            return await _repository.CreateTask(item);
+        }
+
+        public async Task<TaskItem?> UpdateTask(TaskItem item)
+        {
+            return await _repository.UpdateTask(item);
+        }
+
+        public async Task<TaskItem?> DeleteTask(int id)
+        {
+            return await _repository.DeleteTask(id);
+        }
     }
 }

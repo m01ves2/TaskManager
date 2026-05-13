@@ -1,6 +1,6 @@
-﻿using TaskManager.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using TaskManager.Data;
 using TaskManager.Models;
-using TaskManager.Services;
 
 namespace TaskManager.Rspositories
 {
@@ -14,25 +14,25 @@ namespace TaskManager.Rspositories
             _context = context;
         }
 
-        public List<TaskItem> GetAllTasks()
+        public async Task<List<TaskItem>> GetAllTasks()
         {
-            return _context.Tasks.ToList();
+            return await _context.Tasks.ToListAsync();
         }
 
-        public TaskItem? GetTaskById(int id)
+        public async Task<TaskItem?> GetTaskById(int id)
         {
-            return _context.Tasks.FirstOrDefault(i => i.Id == id);
+            return await _context.Tasks.FirstOrDefaultAsync(i => i.Id == id);
         }
 
-        public TaskItem CreateTask(TaskItem item)
+        public async Task<TaskItem> CreateTask(TaskItem item)
         {
             _context.Tasks.Add(item);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
             return item;
         }
-        public TaskItem? UpdateTask(TaskItem changedItem)
+        public async Task<TaskItem?> UpdateTask(TaskItem changedItem)
         {
-            var item = _context.Tasks.FirstOrDefault(i => i.Id == changedItem.Id);
+            var item = await _context.Tasks.FirstOrDefaultAsync(i => i.Id == changedItem.Id);
 
             if (item == null)
                 return null;
@@ -40,21 +40,21 @@ namespace TaskManager.Rspositories
             item.Title = changedItem.Title;
             item.IsCompleted = changedItem.IsCompleted;
 
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
             return item;
 
         }
 
-        public TaskItem? DeleteTask(int id)
+        public async Task<TaskItem?> DeleteTask(int id)
         {
-            var item = _context.Tasks.FirstOrDefault(x => x.Id == id);
+            var item = await _context.Tasks.FirstOrDefaultAsync(x => x.Id == id);
 
             if (item == null)
                 return null;
 
             _context.Tasks.Remove(item);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
             
             return item;
         }
