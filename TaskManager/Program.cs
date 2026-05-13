@@ -1,3 +1,5 @@
+using Microsoft.EntityFrameworkCore;
+using TaskManager.Data;
 using TaskManager.Middleware;
 using TaskManager.Rspositories;
 using TaskManager.Services;
@@ -8,6 +10,11 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddScoped<ILoggerService, LoggerService>();
 builder.Services.AddScoped<ITaskRepository,  TaskRepository>();
 builder.Services.AddScoped<ITaskService, TaskService>();
+
+builder.Services.AddDbContext<AppDbContext>(options =>
+{
+    options.UseSqlite("Data Source=tasks.db");
+});
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
