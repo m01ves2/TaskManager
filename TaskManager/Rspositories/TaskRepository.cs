@@ -31,8 +31,16 @@ namespace TaskManager.Rspositories
             _loggerService = loggerService;
         }
 
-        public List<TaskItem> GetAllTasks() => _items;
-        public TaskItem? GetTaskById(int id) => _items.FirstOrDefault(i => i.Id == id);
+        public List<TaskItem> GetAllTasks()
+        {
+            throw new Exception("BOOM");
+            //return _items;
+        }
+
+        public TaskItem? GetTaskById(int id)
+        {
+            return _items.FirstOrDefault(i => i.Id == id);
+        }
 
         public TaskItem CreateTask(TaskItem item)
         {

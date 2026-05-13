@@ -1,3 +1,4 @@
+using TaskManager.Middleware;
 using TaskManager.Rspositories;
 using TaskManager.Services;
 
@@ -27,6 +28,8 @@ if (app.Environment.IsDevelopment()) {
 
 
 //Middleware
+app.UseMiddleware<ExceptionCatcher>();
+
 app.Use(async (context, next) =>
 {
     Console.WriteLine("=== REQUEST START ===");
@@ -38,6 +41,8 @@ app.Use(async (context, next) =>
 
     Console.WriteLine("=== REQUEST END ===");
 });
+
+
 //app.UseWelcomePage();   // подключение WelcomePageMiddleware
 
 app.MapControllers();
