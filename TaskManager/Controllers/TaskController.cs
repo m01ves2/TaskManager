@@ -10,21 +10,23 @@ namespace TaskManager.Controllers
     [ApiController]
     public class TaskController : ControllerBase
     {
-        private readonly ITaskService _service;
-        private readonly ILoggerService _logger;
+        private readonly ITaskService _taskService;
+        private readonly ILoggerService _loggerService;
 
-        public TaskController(ITaskService service, ILoggerService logger)
+        public TaskController(ITaskService service, ILoggerService loggerService)
         {
-            _service = service;
-            _logger = logger;
-            Console.WriteLine(_service.GetId());
-            Console.WriteLine(_logger.GetId());
+            Console.WriteLine("TaskController Created");
+            
+            _taskService = service;
+            _loggerService = loggerService;
+            Console.WriteLine(_taskService.GetId());
+            Console.WriteLine(_loggerService.GetId());
         }
 
         [HttpGet]
         public ActionResult<List<ReadTaskDto>> GetAll()
         {
-            var tasks = _service.GetAllTasks();
+            var tasks = _taskService.GetAllTasks();
             var tasksDtos = tasks.Select(t => new ReadTaskDto() { Id = t.Id, Title = t.Title, IsCompleted = t.IsCompleted}).ToList();
             return Ok(tasksDtos);
         }
@@ -33,7 +35,7 @@ namespace TaskManager.Controllers
         public ActionResult<ReadTaskDto> GetById(int id)
         {
             //return _items.Where(i => i.Id == id).ToList();
-            var task = _service.GetTaskById(id);
+            var task = _taskService.GetTaskById(id);
 
             if( task != null) {
                 var taskDto = new ReadTaskDto()
@@ -51,9 +53,8 @@ namespace TaskManager.Controllers
         [HttpPost]
         public ActionResult<ReadTaskDto> Create(CreateTaskDto itemDto)
         {
-            Console.WriteLine("TaskController: Create");
             var item = new TaskItem() { Title =  itemDto.Title, IsCompleted = itemDto.IsCompleted }; 
-            var itemCreated = _service.CreateTask(item);
+            var itemCreated = _taskService.CreateTask(item);
             var itemCreatedDto = new ReadTaskDto() { Title = itemCreated.Title, Id = itemCreated.Id, IsCompleted = itemCreated.IsCompleted };
             return Ok(itemCreatedDto);
         }
@@ -62,7 +63,7 @@ namespace TaskManager.Controllers
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
-            var itemDeleted = _service.DeleteTask(id);
+            var itemDeleted = _taskService.DeleteTask(id);
 
             if (itemDeleted != null) {
                 return NoContent();
@@ -74,7 +75,6 @@ namespace TaskManager.Controllers
         [HttpPut("{id}")]
         public ActionResult<ReadTaskDto> Update(int id, UpdateTaskDto changedItemDto)
         {
-            Console.WriteLine("TaskController: Update");
             var changedItem = new TaskItem
             {
                 Id = id,
@@ -82,7 +82,7 @@ namespace TaskManager.Controllers
                 IsCompleted = changedItemDto.IsCompleted
             };
 
-            var updatedTask = _service.UpdateTask(changedItem);
+            var updatedTask = _taskService.UpdateTask(changedItem);
 
             if (updatedTask != null) {
                 var updatedTaskDto = new ReadTaskDto
