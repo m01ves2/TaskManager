@@ -9,5 +9,7 @@ namespace TaskManager.Services
         TaskItem CreateTask(TaskItem item);
         TaskItem? UpdateTask(TaskItem item);
         TaskItem? DeleteTask(int id);
+
+        Guid GetId();
     }
 }

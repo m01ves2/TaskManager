@@ -24,6 +24,18 @@ namespace TaskManager.Services
             }
         };
 
+        private Guid _id = Guid.NewGuid();
+
+
+        public TaskService()
+        {
+            Console.WriteLine("TaskService created");
+        }
+        public Guid GetId()
+        {
+            return _id;
+        }
+
         public List<TaskItem> GetAllTasks() => _items;
         public TaskItem? GetTaskById(int id) => _items.FirstOrDefault(i => i.Id == id);
 

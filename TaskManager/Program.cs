@@ -4,6 +4,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddScoped<ITaskService, TaskService>();
+builder.Services.AddScoped<ILoggerService, LoggerService>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -22,7 +23,6 @@ if (app.Environment.IsDevelopment()) {
 
 //app.UseAuthorization();
 
-app.MapControllers();
 
 //Middleware
 app.Use(async (context, next) =>
@@ -36,5 +36,7 @@ app.Use(async (context, next) =>
 
     Console.WriteLine("=== REQUEST END ===");
 });
+//app.UseWelcomePage();   // подключение WelcomePageMiddleware
 
+app.MapControllers();
 app.Run();

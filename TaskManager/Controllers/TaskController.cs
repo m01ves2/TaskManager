@@ -11,10 +11,14 @@ namespace TaskManager.Controllers
     public class TaskController : ControllerBase
     {
         private readonly ITaskService _service;
+        private readonly ILoggerService _logger;
 
-        public TaskController(ITaskService service)
+        public TaskController(ITaskService service, ILoggerService logger)
         {
             _service = service;
+            _logger = logger;
+            Console.WriteLine(_service.GetId());
+            Console.WriteLine(_logger.GetId());
         }
 
         [HttpGet]
@@ -47,6 +51,7 @@ namespace TaskManager.Controllers
         [HttpPost]
         public ActionResult<ReadTaskDto> Create(CreateTaskDto itemDto)
         {
+            Console.WriteLine("TaskController: Create");
             var item = new TaskItem() { Title =  itemDto.Title, IsCompleted = itemDto.IsCompleted }; 
             var itemCreated = _service.CreateTask(item);
             var itemCreatedDto = new ReadTaskDto() { Title = itemCreated.Title, Id = itemCreated.Id, IsCompleted = itemCreated.IsCompleted };
@@ -69,6 +74,7 @@ namespace TaskManager.Controllers
         [HttpPut("{id}")]
         public ActionResult<ReadTaskDto> Update(int id, UpdateTaskDto changedItemDto)
         {
+            Console.WriteLine("TaskController: Update");
             var changedItem = new TaskItem
             {
                 Id = id,
