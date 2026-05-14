@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using TaskManager.Dtos;
 using TaskManager.Models;
 using TaskManager.Services;
@@ -14,7 +14,7 @@ namespace TaskManager.Controllers
 
         public TaskController(ITaskService service, ILoggerService loggerService)
         {
-            Console.WriteLine("TaskController Created");
+            //Console.WriteLine("TaskController Created");
             
             _taskService = service;
             _loggerService = loggerService;
@@ -107,6 +107,26 @@ namespace TaskManager.Controllers
             }
 
             return NotFound();
+        }
+
+        [HttpGet("slow")]
+        public async Task<IActionResult> Slow()
+        {
+            Console.WriteLine($"START Slow: {DateTime.Now:HH:mm:ss.fff}");
+
+            await Task.Delay(5000); // имитация долгой операции
+
+            Console.WriteLine($"END Slow: {DateTime.Now:HH:mm:ss.fff}");
+
+            return Ok("Slow finished");
+        }
+
+
+        [HttpGet("fast")]
+        public IActionResult Fast()
+        {
+            Console.WriteLine($"FAST: {DateTime.Now:HH:mm:ss.fff}");
+            return Ok("Fast response");
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿using TaskManager.Models;
 
-namespace TaskManager.Rspositories
+namespace TaskManager.Repositories
 {
     public interface ITaskRepository
     {

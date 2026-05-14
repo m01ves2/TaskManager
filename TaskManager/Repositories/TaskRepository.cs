@@ -2,7 +2,7 @@
 using TaskManager.Data;
 using TaskManager.Models;
 
-namespace TaskManager.Rspositories
+namespace TaskManager.Repositories
 {
     public class TaskRepository : ITaskRepository
     {
@@ -10,7 +10,7 @@ namespace TaskManager.Rspositories
 
         public TaskRepository(AppDbContext context)
         {
-            Console.WriteLine("TaskRepository created");
+            //Console.WriteLine("TaskRepository created");
             _context = context;
         }
 

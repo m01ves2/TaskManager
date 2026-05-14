@@ -1,29 +1,34 @@
 #!/bin/bash
 
-# Директории для обработки
 dirs=("TaskManager")
 output="result.txt"
 
-# Очищаем результат
+# очищаем файл
 > "$output"
 
-# Текущая директория
 current_dir=$(pwd)
 
+# фикс UTF-8 окружения (LEVEL 1 FIX)
+export LANG=C.UTF-8
+export LC_ALL=C.UTF-8
+
 for dir in "${dirs[@]}"; do
-    # Рекурсивно находим все .cs файлы, сортируем, исключаем Debug
-    find "$dir" -type f -name "*.cs" -not -path "*/Debug/*" | sort | while read -r file; do
-        # Путь относительно текущей директории
+    find "$dir" -type f -name "*.cs" -not -path "*/bin/*" -not -path "*/obj/*" | sort | while read -r file; do
+
         relative_path=$(realpath --relative-to="$current_dir" "$file")
-        # Пишем комментарий с разделителем
+
         echo "//${relative_path}:" >> "$output"
         echo "//----------------------------------------" >> "$output"
-        # Добавляем содержимое файла, удаляя лишние пустые строки
-        sed '/^[[:space:]]*$/d' "$file" >> "$output"
-        # Пустая строка между файлами
+
+        # LEVEL 2 FIX: удаляем BOM + нормализуем UTF-8
+        iconv -f utf-8 -t utf-8 "$file" \
+            | sed '1s/^\xEF\xBB\xBF//' \
+            | sed '/^[[:space:]]*$/d' \
+            >> "$output"
+
         echo "" >> "$output"
     done
 done
 
-# Принудительно сохраняем как UTF-8
-iconv -f UTF-8 -t UTF-8 "$output" -o "$output"
+# LEVEL 3 FIX: финальная нормализация файла
+iconv -f utf-8 -t utf-8 "$output" -o "$output"

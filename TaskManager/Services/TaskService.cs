@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using TaskManager.Models;
-using TaskManager.Rspositories;
+using TaskManager.Repositories;
 
 namespace TaskManager.Services
 {

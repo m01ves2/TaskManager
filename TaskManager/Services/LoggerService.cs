@@ -6,7 +6,7 @@
 
         public LoggerService()
         {
-            Console.WriteLine("LoggerService Created");
+            //Console.WriteLine("LoggerService Created");
         }
         public Guid GetId() => _id;
 

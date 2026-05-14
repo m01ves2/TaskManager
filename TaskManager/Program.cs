@@ -2,7 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using TaskManager.Data;
 using TaskManager.Middleware;
 using TaskManager.Models;
-using TaskManager.Rspositories;
+using TaskManager.Repositories;
 using TaskManager.Services;
 
 var builder = WebApplication.CreateBuilder(args);
