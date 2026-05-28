@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using TaskManager.Exceptions;
 using TaskManager.Models;
 using TaskManager.Repositories;
 
@@ -32,7 +33,7 @@ namespace TaskManager.Services
         {
             var existingTask = await _repository.GetTaskByTitle(item.Title);
             if (existingTask != null) {
-                throw new InvalidOperationException("Task with this title already exists");
+                throw new BusinessException("Task already exists");
             }
             return await _repository.CreateTask(item);
         }

@@ -1,4 +1,6 @@
-﻿namespace TaskManager.Middleware
+﻿using TaskManager.Exceptions;
+
+namespace TaskManager.Middleware
 {
     public class ExceptionCatcher
     {
@@ -12,6 +14,13 @@
         {
             try {
                 await _next(context);
+            }
+            catch (BusinessException e) {
+                context.Response.StatusCode = 400;
+                await context.Response.WriteAsJsonAsync(new
+                {
+                    message = e.Message
+                });
             }
             catch (Exception e) {
                 context.Response.StatusCode = 500;
