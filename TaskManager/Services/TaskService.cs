@@ -30,6 +30,10 @@ namespace TaskManager.Services
 
         public async Task<TaskItem> CreateTask(TaskItem item)
         {
+            var existingTask = await _repository.GetTaskByTitle(item.Title);
+            if (existingTask != null) {
+                throw new InvalidOperationException("Task with this title already exists");
+            }
             return await _repository.CreateTask(item);
         }
 
