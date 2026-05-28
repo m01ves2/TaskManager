@@ -24,6 +24,11 @@ namespace TaskManager.Repositories
             return await _context.Tasks.FirstOrDefaultAsync(i => i.Id == id);
         }
 
+        public async Task<TaskItem?> GetTaskByTitle(string title)
+        {
+            return await _context.Tasks.FirstOrDefaultAsync(i =>i.Title == title);
+        }
+
         public async Task<TaskItem> CreateTask(TaskItem item)
         {
             _context.Tasks.Add(item);

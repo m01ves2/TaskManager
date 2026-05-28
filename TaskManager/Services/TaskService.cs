@@ -23,6 +23,11 @@ namespace TaskManager.Services
             return await _repository.GetTaskById(id);
         }
 
+        public async Task<TaskItem?> GetTaskByTitle(string title)
+        {
+            return await _repository.GetTaskByTitle(title);
+        }
+
         public async Task<TaskItem> CreateTask(TaskItem item)
         {
             return await _repository.CreateTask(item);
