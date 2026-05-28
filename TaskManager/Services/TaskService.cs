@@ -32,16 +32,23 @@ namespace TaskManager.Services
         public async Task<TaskItem> CreateTask(TaskItem item)
         {
 
-            if(string.IsNullOrWhiteSpace(item.Title)) {
-                throw new BusinessException("TASK_TITLE_INVALID", "Title cannot be empty");
-            }
+            ValidateCreateTask(item);
+            await EnsureTitleIsUnique(item);
 
-            var existingTask = await _repository.GetTaskByTitle(item.Title);
-            if (existingTask != null) {
-                throw new BusinessException("TASK_ALREADY_EXISTS", "Task already exists");
-            }
-            
             return await _repository.CreateTask(item);
+        }
+
+        private void ValidateCreateTask(TaskItem item)
+        {
+            if (string.IsNullOrWhiteSpace(item.Title))
+                throw new BusinessException("TASK_TITLE_INVALID", "Title cannot be empty");
+        }
+        private async Task EnsureTitleIsUnique(TaskItem item)
+        {
+            var existing = await _repository.GetTaskByTitle(item.Title);
+
+            if (existing != null)
+                throw new BusinessException("TASK_ALREADY_EXISTS", "Task already exists");
         }
 
         public async Task<TaskItem?> UpdateTask(TaskItem item)
