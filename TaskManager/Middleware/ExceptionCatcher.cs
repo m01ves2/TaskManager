@@ -19,7 +19,8 @@ namespace TaskManager.Middleware
                 context.Response.StatusCode = 400;
                 await context.Response.WriteAsJsonAsync(new
                 {
-                    message = e.Message
+                    message = e.Message,
+                    code = e.Code,
                 });
             }
             catch (Exception e) {

@@ -33,7 +33,7 @@ namespace TaskManager.Services
         {
             var existingTask = await _repository.GetTaskByTitle(item.Title);
             if (existingTask != null) {
-                throw new BusinessException("Task already exists");
+                throw new BusinessException("TASK_ALREADY_EXISTS", "Task already exists");
             }
             return await _repository.CreateTask(item);
         }
