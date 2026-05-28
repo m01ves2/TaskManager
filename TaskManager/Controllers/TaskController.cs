@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using TaskManager.Dtos;
+using TaskManager.Mappers;
 using TaskManager.Models;
 using TaskManager.Services;
 
@@ -12,87 +13,53 @@ namespace TaskManager.Controllers
         private readonly ITaskService _taskService;
         private readonly ILoggerService _loggerService;
 
-        public TaskController(ITaskService service, ILoggerService loggerService)
+        public TaskController(ITaskService taskService, ILoggerService loggerService)
         {
-            //Console.WriteLine("TaskController Created");
-            
-            _taskService = service;
+            _taskService = taskService;
             _loggerService = loggerService;
-            //Console.WriteLine(_taskService.GetId());
             Console.WriteLine(_loggerService.GetId());
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<ReadTaskDto>>> GetAll()
+        public async Task<ActionResult<List<ReadTaskItemDto>>> GetAll()
         {
-            var tasks = await _taskService.GetAllTasks();
-            var tasksDtos = tasks.Select(t => new ReadTaskDto() 
-            { 
-                Id = t.Id, 
-                Title = t.Title, 
-                IsCompleted = t.IsCompleted
-            }).ToList();
-            return Ok(tasksDtos);
+            var taskItems = await _taskService.GetAllTasks();
+            var responseDtos = taskItems.Select(t => TaskItemMapper.ToReadDto(t)).ToList();
+            return Ok(responseDtos);
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<ReadTaskDto>> GetById(int id)
+        public async Task<ActionResult<ReadTaskItemDto>> GetById(int id)
         {
-            var task = await _taskService.GetTaskById(id);
+            var taskItem = await _taskService.GetTaskById(id);
 
-            if( task != null) {
-                var taskDto = new ReadTaskDto()
-                {
-                    Id = task.Id,
-                    Title = task.Title,
-                    IsCompleted = task.IsCompleted
-                };
-                return Ok(taskDto);
+            if (taskItem != null) {
+                var responseDto = TaskItemMapper.ToReadDto(taskItem);
+                return Ok(responseDto);
             }
 
             return NotFound();
         }
 
         [HttpPost]
-        public async Task<ActionResult<ReadTaskDto>> Create(CreateTaskDto itemDto)
+        public async Task<ActionResult<ReadTaskItemDto>> Create(CreateTaskItemDto createDto)
         {
-            var item = new TaskItem() { 
-                Title =  itemDto.Title, 
-                IsCompleted = itemDto.IsCompleted 
-            }; 
-            var itemCreated = await _taskService.CreateTask(item);
-            var itemCreatedDto = new ReadTaskDto() 
-            { 
-                Title = itemCreated.Title, 
-                Id = itemCreated.Id, 
-                IsCompleted = itemCreated.IsCompleted 
-            };
-            return Ok(itemCreatedDto);
+            var taskItem = TaskItemMapper.FromCreateDto(createDto);
+            var createdTaskItem = await _taskService.CreateTask(taskItem);
+            var responseDto = TaskItemMapper.ToReadDto(createdTaskItem);
+            return Ok(responseDto);
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult<ReadTaskDto>> Update(int id, UpdateTaskDto changedItemDto)
+        public async Task<ActionResult<ReadTaskItemDto>> Update(int id, UpdateTaskItemDto updateDto)
         {
-            var changedItem = new TaskItem
-            {
-                Id = id,
-                Title = changedItemDto.Title,
-                IsCompleted = changedItemDto.IsCompleted
-            };
+            var taskItem = TaskItemMapper.FromUpdateDto(id, updateDto);
+            var updatedTaskItem = await _taskService.UpdateTask(taskItem);
 
-            var updatedTask = await _taskService.UpdateTask(changedItem);
-
-            if (updatedTask != null) {
-                var updatedTaskDto = new ReadTaskDto
-                {
-                    Id = updatedTask.Id,
-                    Title = updatedTask.Title,
-                    IsCompleted = updatedTask.IsCompleted
-                };
-
-                return Ok(updatedTaskDto);
+            if (updatedTaskItem != null) {
+                var responseDto = TaskItemMapper.ToReadDto(updatedTaskItem);
+                return Ok(responseDto);
             }
-
             return NotFound();
         }
 
@@ -100,33 +67,12 @@ namespace TaskManager.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            var itemDeleted = await _taskService.DeleteTask(id);
+            var deletedTaskItem = await _taskService.DeleteTask(id);
 
-            if (itemDeleted != null) {
+            if (deletedTaskItem != null) {
                 return NoContent();
             }
-
             return NotFound();
-        }
-
-        [HttpGet("slow")]
-        public async Task<IActionResult> Slow()
-        {
-            Console.WriteLine($"START Slow: {DateTime.Now:HH:mm:ss.fff}");
-
-            await Task.Delay(5000); // имитация долгой операции
-
-            Console.WriteLine($"END Slow: {DateTime.Now:HH:mm:ss.fff}");
-
-            return Ok("Slow finished");
-        }
-
-
-        [HttpGet("fast")]
-        public IActionResult Fast()
-        {
-            Console.WriteLine($"FAST: {DateTime.Now:HH:mm:ss.fff}");
-            return Ok("Fast response");
         }
     }
 }

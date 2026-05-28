@@ -1,6 +1,6 @@
 ﻿namespace TaskManager.Dtos
 {
-    public class ReadTaskDto
+    public class ReadTaskItemDto
     {
         public int Id { get; set; }
         public string Title { get; set; }

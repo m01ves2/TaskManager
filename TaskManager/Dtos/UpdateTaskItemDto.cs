@@ -2,7 +2,7 @@
 
 namespace TaskManager.Dtos
 {
-    public class UpdateTaskDto
+    public class UpdateTaskItemDto
     {
         [Required]
         [MinLength(3)]
