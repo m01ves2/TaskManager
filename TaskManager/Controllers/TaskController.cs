@@ -10,18 +10,21 @@ namespace TaskManager.Controllers
     public class TaskController : ControllerBase
     {
         private readonly ITaskService _taskService;
-        private readonly ILoggerService _loggerService;
+        private readonly ILogger<TaskController> _logger;
 
-        public TaskController(ITaskService taskService, ILoggerService loggerService)
+        public TaskController(ITaskService taskService, ILogger<TaskController> logger)
         {
             _taskService = taskService;
-            _loggerService = loggerService;
-            Console.WriteLine(_loggerService.GetId());
+            _logger = logger;
+
+            _logger.LogInformation("Controller initialized");
         }
 
         [HttpGet]
         public async Task<ActionResult<List<ReadTaskItemDto>>> GetAll()
         {
+            _logger.LogInformation("Request handled: GetAll");
+
             var taskItems = await _taskService.GetAllTasks();
             var responseDtos = taskItems.Select(t => TaskItemMapper.ToReadDto(t)).ToList();
             return Ok(responseDtos);

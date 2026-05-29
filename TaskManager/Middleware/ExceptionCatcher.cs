@@ -5,9 +5,11 @@ namespace TaskManager.Middleware
     public class ExceptionCatcher
     {
         private readonly RequestDelegate _next;
-        public ExceptionCatcher(RequestDelegate next)
+        private readonly ILogger<ExceptionCatcher> _logger;
+        public ExceptionCatcher(RequestDelegate next, ILogger<ExceptionCatcher> logger)
         {
             _next = next;
+            _logger = logger;
         }
 
         public async Task Invoke(HttpContext context)
