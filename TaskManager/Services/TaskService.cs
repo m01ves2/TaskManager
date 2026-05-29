@@ -60,5 +60,17 @@ namespace TaskManager.Services
         {
             return await _repository.DeleteTask(id);
         }
+
+        public async Task<TaskItem?> CompleteTask(int id)
+        {
+            var taskItem = await _repository.GetTaskById(id);
+            if (taskItem == null)
+                throw new BusinessException("TASK_DOESNOT_EXIST", "Task doesn't exist");
+
+            taskItem.MarkAsCompleted();
+            await _repository.SaveChanges();
+            
+            return taskItem;
+        }
     }
 }

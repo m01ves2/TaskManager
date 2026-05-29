@@ -63,5 +63,10 @@ namespace TaskManager.Repositories
             
             return item;
         }
+
+        public async Task SaveChanges()
+        {
+            await _context.SaveChangesAsync();
+        }
     }
 }

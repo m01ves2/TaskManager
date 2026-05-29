@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using TaskManager.Dtos;
 using TaskManager.Mappers;
-using TaskManager.Models;
 using TaskManager.Services;
 
 namespace TaskManager.Controllers
@@ -50,6 +49,18 @@ namespace TaskManager.Controllers
             var responseDto = TaskItemMapper.ToReadDto(createdTaskItem);
             return Ok(responseDto);
         }
+
+        [HttpPost("{id}/complete")]
+        public async Task<ActionResult<ReadTaskItemDto>> CompleteTask(int id)
+        {
+            var taskItem = await _taskService.CompleteTask(id);
+            if (taskItem == null)
+                return NotFound();
+
+            var responseDto = TaskItemMapper.ToReadDto(taskItem);
+            return Ok(responseDto);
+        }
+
 
         [HttpPut("{id}")]
         public async Task<ActionResult<ReadTaskItemDto>> Update(int id, UpdateTaskItemDto updateDto)

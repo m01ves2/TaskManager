@@ -10,5 +10,6 @@ namespace TaskManager.Repositories
         Task<TaskItem> CreateTask(TaskItem item);
         Task<TaskItem?> UpdateTask(TaskItem item);
         Task<TaskItem?> DeleteTask(int id);
+        Task SaveChanges();
     }
 }
