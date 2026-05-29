@@ -46,7 +46,6 @@ namespace TaskManager.Controllers
         [HttpPost]
         public async Task<ActionResult<ReadTaskItemDto>> Create(CreateTaskItemDto createDto)
         {
-            createDto.Title = createDto.Title?.Trim();
             var taskItem = TaskItemMapper.FromCreateDto(createDto);
             var createdTaskItem = await _taskService.CreateTask(taskItem);
             var responseDto = TaskItemMapper.ToReadDto(createdTaskItem);

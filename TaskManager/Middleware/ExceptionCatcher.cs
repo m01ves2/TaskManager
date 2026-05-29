@@ -1,4 +1,5 @@
-﻿using TaskManager.Exceptions;
+﻿using TaskManager.Errors;
+using TaskManager.Exceptions;
 
 namespace TaskManager.Middleware
 {
@@ -18,21 +19,26 @@ namespace TaskManager.Middleware
                 await _next(context);
             }
             catch (BusinessException e) {
-                context.Response.StatusCode = 400;
-                await context.Response.WriteAsJsonAsync(new
-                {
-                    message = e.Message,
-                    code = e.Code,
-                });
+                context.Response.StatusCode = StatusCodes.Status400BadRequest;
+                context.Response.ContentType = "application/json";
+                await context.Response.WriteAsJsonAsync(
+                    new ErrorResponse()
+                    {
+                        Code = e.Code,
+                        Message = e.Message,
+                    }
+                );
             }
             catch (Exception e) {
-                context.Response.StatusCode = 500;
-
-                await context.Response.WriteAsJsonAsync(new
-                {
-                    code = "INTERNAL_SERVER_ERROR",
-                    message = $"Internal server error: {e.Message}"
-                });
+                context.Response.StatusCode = StatusCodes.Status500InternalServerError;
+                context.Response.ContentType = "application/json";
+                await context.Response.WriteAsJsonAsync(
+                    new ErrorResponse()
+                    {
+                        Code = "INTERNAL_SERVER_ERROR",
+                        Message = $"Internal server error: {e.Message}"
+                    }
+                );
             }
         }
     }

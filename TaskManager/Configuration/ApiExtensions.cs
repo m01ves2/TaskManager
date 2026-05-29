@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using TaskManager.Errors;
 
 namespace TaskManager.Configuration
 {
@@ -18,12 +19,14 @@ namespace TaskManager.Configuration
                                 x => x.Value!.Errors.Select(e => e.ErrorMessage).ToArray()
                             );
 
-                        return new BadRequestObjectResult(new
-                        {
-                            code = "VALIDATION_ERROR",
-                            message = "Validation failed",
-                            errors
-                        });
+                        return new BadRequestObjectResult(
+                            new ValidationErrorResponse()
+                            {
+                                Code = "VALIDATION_ERROR",
+                                Message = "Validation failed",
+                                Errors = errors
+                            }
+                        );
                     };
                 });
 

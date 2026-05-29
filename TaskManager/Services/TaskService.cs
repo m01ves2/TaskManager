@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
 using TaskManager.Exceptions;
 using TaskManager.Models;
 using TaskManager.Repositories;
@@ -31,7 +32,7 @@ namespace TaskManager.Services
 
         public async Task<TaskItem> CreateTask(TaskItem item)
         {
-
+            item.Title = item.Title.Trim(); //title business validation
             ValidateCreateTask(item);
             await EnsureTitleIsUnique(item);
 
@@ -40,7 +41,7 @@ namespace TaskManager.Services
 
         private void ValidateCreateTask(TaskItem item)
         {
-            if (string.IsNullOrWhiteSpace(item.Title))
+            if (string.IsNullOrWhiteSpace(item.Title)) //business defensive validation
                 throw new BusinessException("TASK_TITLE_INVALID", "Title cannot be empty");
         }
         private async Task EnsureTitleIsUnique(TaskItem item)
