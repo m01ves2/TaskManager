@@ -1,0 +1,35 @@
+﻿using Microsoft.AspNetCore.Mvc;
+
+namespace TaskManager.Configuration
+{
+    public static class ApiExtensions
+    {
+        public static IServiceCollection AddApi(this IServiceCollection services)
+        {
+            services.AddControllers()
+                .ConfigureApiBehaviorOptions(options =>
+                {
+                    options.InvalidModelStateResponseFactory = context =>
+                    {
+                        var errors = context.ModelState
+                            .Where(x => x.Value?.Errors.Count > 0)
+                            .ToDictionary(
+                                x => x.Key,
+                                x => x.Value!.Errors.Select(e => e.ErrorMessage).ToArray()
+                            );
+
+                        return new BadRequestObjectResult(new
+                        {
+                            code = "VALIDATION_ERROR",
+                            message = "Validation failed",
+                            errors
+                        });
+                    };
+                });
+
+            services.AddSwaggerGen();
+
+            return services;
+        }
+    }
+}

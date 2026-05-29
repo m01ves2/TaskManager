@@ -1,4 +1,6 @@
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using TaskManager.Configuration;
 using TaskManager.Data;
 using TaskManager.Middleware;
 using TaskManager.Models;
@@ -8,19 +10,13 @@ using TaskManager.Services;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddScoped<ILoggerService, LoggerService>();
-builder.Services.AddScoped<ITaskRepository, TaskRepository>();
-builder.Services.AddScoped<ITaskService, TaskService>();
+builder.Services.AddApplicationServices();
 
-builder.Services.AddDbContext<AppDbContext>(options =>
-{
-    options.UseSqlite("Data Source=tasks.db");
-});
+//Add database
+builder.Services.AddDatabase();
 
-builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-//builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+//Configure controllers
+builder.Services.AddApi();
 
 var app = builder.Build();
 
@@ -30,13 +26,10 @@ if (app.Environment.IsDevelopment()) {
     app.UseSwaggerUI();
 }
 
-SeedDatabase(app);
-
+app.InitializeDatabase();
 
 //app.UseHttpsRedirection();
-
 //app.UseAuthorization();
-
 
 //Middleware
 app.UseMiddleware<ExceptionCatcher>();
@@ -59,17 +52,17 @@ app.Use(async (context, next) =>
 app.MapControllers();
 app.Run();
 
-static void SeedDatabase(WebApplication app)
-{
-    using var scope = app.Services.CreateScope();
-    var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+//static void InitializeDatabase(WebApplication app)
+//{
+//    using var scope = app.Services.CreateScope();
+//    var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
-    if (!context.Tasks.Any()) {
-        context.Tasks.AddRange(
-            new TaskItem { Title = "Learn ASP.NET Core", IsCompleted = false },
-            new TaskItem { Title = "Learn Controllers", IsCompleted = true }
-        );
+//    if (!context.Tasks.Any()) {
+//        context.Tasks.AddRange(
+//            new TaskItem { Title = "Learn ASP.NET Core", IsCompleted = false },
+//            new TaskItem { Title = "Learn Controllers", IsCompleted = true }
+//        );
 
-        context.SaveChanges();
-    }
-}
+//        context.SaveChanges();
+//    }
+//}
