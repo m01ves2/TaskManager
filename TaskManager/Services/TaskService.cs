@@ -33,29 +33,36 @@ namespace TaskManager.Services
 
         public async Task<TaskItem> CreateTask(TaskItem item)
         {
-            item.Title = item.Title.Trim(); //title business validation
-            ValidateCreateTask(item);
-            await EnsureTitleIsUnique(item);
+            item.Title = item.Title.Trim();
 
-            return await _repository.CreateTask(item);
-        }
+            ValidateTitle(item);
 
-        private void ValidateCreateTask(TaskItem item)
-        {
-            if (string.IsNullOrWhiteSpace(item.Title)) //business defensive validation
-                throw new BusinessException(ErrorCodes.TaskTitleInvalid, "Title cannot be empty");
-        }
-        private async Task EnsureTitleIsUnique(TaskItem item)
-        {
             var existing = await _repository.GetTaskByTitle(item.Title);
 
             if (existing != null)
                 throw new BusinessException(ErrorCodes.TaskAlreadyExists, "Task already exists");
+
+            return await _repository.CreateTask(item);
         }
 
         public async Task<TaskItem?> UpdateTask(TaskItem item)
         {
+            item.Title = item.Title.Trim();
+
+            ValidateTitle(item);
+
+            var existing = await _repository.GetTaskByTitle(item.Title);
+
+            if (existing != null && existing.Id != item.Id)
+                throw new BusinessException(ErrorCodes.TaskAlreadyExists, "Task already exists");
+
             return await _repository.UpdateTask(item);
+        }
+
+        private void ValidateTitle(TaskItem item)
+        {
+            if (string.IsNullOrWhiteSpace(item.Title)) //business defensive validation
+                throw new BusinessException(ErrorCodes.TaskTitleInvalid, "Title cannot be empty");
         }
 
         public async Task<TaskItem?> DeleteTask(int id)
