@@ -26,11 +26,6 @@ namespace TaskManager.Services
             return await _repository.GetTaskById(id);
         }
 
-        public async Task<TaskItem?> GetTaskByTitle(string title)
-        {
-            return await _repository.GetTaskByTitle(title);
-        }
-
         public async Task<TaskItem> CreateTask(TaskItem item)
         {
             item.Title = item.Title.Trim();
@@ -70,16 +65,12 @@ namespace TaskManager.Services
             return await _repository.DeleteTask(id);
         }
 
-        public async Task<TaskItem?> CompleteTask(int id)
+        public async Task<TaskItem> CompleteTask(int id)
         {
-            var taskItem = await _repository.GetTaskById(id);
+            var taskItem = await _repository.CompleteTask(id);
 
             if (taskItem == null)
-                throw new BusinessException( ErrorCodes.TaskDoesNotExist, "Task doesn't exist");
-
-            taskItem.IsCompleted = true;
-
-            await _repository.SaveChanges();
+                throw new BusinessException(ErrorCodes.TaskDoesNotExist, "Task doesn't exist");
 
             return taskItem;
         }

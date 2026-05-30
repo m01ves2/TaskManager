@@ -64,6 +64,20 @@ namespace TaskManager.Repositories
             return item;
         }
 
+        public async Task<TaskItem?> CompleteTask(int id)
+        {
+            var item = await _context.Tasks.FirstOrDefaultAsync(x => x.Id == id);
+
+            if (item == null)
+                return null;
+
+            item.IsCompleted = true;
+
+            await _context.SaveChangesAsync();
+
+            return item;
+        }
+
         public async Task SaveChanges()
         {
             await _context.SaveChangesAsync();
