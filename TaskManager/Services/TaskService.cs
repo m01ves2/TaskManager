@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using TaskManager.Errors;
 using TaskManager.Exceptions;
 using TaskManager.Models;
 using TaskManager.Repositories;
@@ -42,14 +43,14 @@ namespace TaskManager.Services
         private void ValidateCreateTask(TaskItem item)
         {
             if (string.IsNullOrWhiteSpace(item.Title)) //business defensive validation
-                throw new BusinessException("TASK_TITLE_INVALID", "Title cannot be empty");
+                throw new BusinessException(ErrorCodes.TaskTitleInvalid, "Title cannot be empty");
         }
         private async Task EnsureTitleIsUnique(TaskItem item)
         {
             var existing = await _repository.GetTaskByTitle(item.Title);
 
             if (existing != null)
-                throw new BusinessException("TASK_ALREADY_EXISTS", "Task already exists");
+                throw new BusinessException(ErrorCodes.TaskAlreadyExists, "Task already exists");
         }
 
         public async Task<TaskItem?> UpdateTask(TaskItem item)
@@ -66,7 +67,7 @@ namespace TaskManager.Services
         {
             var taskItem = await _repository.GetTaskById(id);
             if (taskItem == null)
-                throw new BusinessException("TASK_DOESNOT_EXIST", "Task doesn't exist");
+                throw new BusinessException(ErrorCodes.TaskDoesNotExist, "Task doesn't exist");
 
             taskItem.MarkAsCompleted();
             await _repository.SaveChanges();
