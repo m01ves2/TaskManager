@@ -35,7 +35,7 @@ namespace TaskManager.Middleware
                 await context.Response.WriteAsJsonAsync(
                     new ErrorResponse()
                     {
-                        Code = "INTERNAL_SERVER_ERROR",
+                        Code = ErrorCodes.InternalServerError,
                         Message = $"Internal server error: {e.Message}"
                     }
                 );

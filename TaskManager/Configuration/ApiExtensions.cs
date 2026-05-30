@@ -22,7 +22,7 @@ namespace TaskManager.Configuration
                         return new BadRequestObjectResult(
                             new ValidationErrorResponse()
                             {
-                                Code = "VALIDATION_ERROR",
+                                Code = ErrorCodes.ValidationError,
                                 Message = "Validation failed",
                                 Errors = errors
                             }
