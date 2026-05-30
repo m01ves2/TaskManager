@@ -10,21 +10,16 @@ namespace TaskManager.Controllers
     public class TaskController : ControllerBase
     {
         private readonly ITaskService _taskService;
-        private readonly ILogger<TaskController> _logger;
+        //private readonly ILogger<TaskController> _logger;
 
-        public TaskController(ITaskService taskService, ILogger<TaskController> logger)
+        public TaskController(ITaskService taskService)
         {
             _taskService = taskService;
-            _logger = logger;
-
-            _logger.LogInformation("Controller initialized");
         }
 
         [HttpGet]
         public async Task<ActionResult<List<ReadTaskItemDto>>> GetAll()
         {
-            _logger.LogInformation("Request handled: GetAll");
-
             var taskItems = await _taskService.GetAllTasks();
             var responseDtos = taskItems.Select(t => TaskItemMapper.ToReadDto(t)).ToList();
             return Ok(responseDtos);
@@ -49,7 +44,10 @@ namespace TaskManager.Controllers
             var taskItem = TaskItemMapper.FromCreateDto(createDto);
             var createdTaskItem = await _taskService.CreateTask(taskItem);
             var responseDto = TaskItemMapper.ToReadDto(createdTaskItem);
-            return Ok(responseDto);
+            //return Ok(responseDto);
+            return CreatedAtAction( nameof(GetById),
+                                    new { id = responseDto.Id },
+                                    responseDto);
         }
 
         [HttpPost("{id}/complete")]
