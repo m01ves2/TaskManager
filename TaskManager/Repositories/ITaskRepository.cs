@@ -4,7 +4,7 @@ namespace TaskManager.Repositories
 {
     public interface ITaskRepository
     {
-        Task<List<TaskItem>> GetAllTasks();
+        Task<List<TaskItem>> GetAllTasks(string? search, bool? isCompleted);
         Task<TaskItem?> GetTaskById(int id);
         Task<TaskItem?> GetTaskByTitle(string title);
         Task<TaskItem> CreateTask(TaskItem item);

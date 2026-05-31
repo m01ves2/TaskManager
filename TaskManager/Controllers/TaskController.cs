@@ -20,7 +20,7 @@ namespace TaskManager.Controllers
         [HttpGet]
         public async Task<ActionResult<List<ReadTaskItemDto>>> GetAll([FromQuery] TaskQueryDto query)
         {
-            var taskItems = await _taskService.GetAllTasks();
+            var taskItems = await _taskService.GetAllTasks(query.Search, query.IsCompleted);
             var responseDtos = taskItems.Select(t => TaskItemMapper.ToReadDto(t)).ToList();
             return Ok(responseDtos);
         }

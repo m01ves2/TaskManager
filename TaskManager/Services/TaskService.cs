@@ -16,9 +16,9 @@ namespace TaskManager.Services
             _repository = repository;
         }
 
-        public async Task<List<TaskItem>> GetAllTasks()
+        public async Task<List<TaskItem>> GetAllTasks(string? search, bool? isCompleted)
         {
-            return await _repository.GetAllTasks();
+            return await _repository.GetAllTasks(search, isCompleted);
         }
 
         public async Task<TaskItem?> GetTaskById(int id)

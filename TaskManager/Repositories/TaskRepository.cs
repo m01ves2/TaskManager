@@ -14,9 +14,17 @@ namespace TaskManager.Repositories
             _context = context;
         }
 
-        public async Task<List<TaskItem>> GetAllTasks()
+        public async Task<List<TaskItem>> GetAllTasks(string? search, bool? isCompleted)
         {
-            return await _context.Tasks.ToListAsync();
+            var query = _context.Tasks.AsQueryable();
+            if (!string.IsNullOrEmpty(search)) {
+                var searchNormalized = search.Trim();
+                query = query.Where(t => t.Title.Contains(searchNormalized));
+            }
+            if (isCompleted != null) {
+                query = query.Where(t => t.IsCompleted == isCompleted);
+            }
+            return await query.ToListAsync();
         }
 
         public async Task<TaskItem?> GetTaskById(int id)
