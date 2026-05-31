@@ -14,7 +14,7 @@ namespace TaskManager.Repositories
             _context = context;
         }
 
-        public async Task<List<TaskItem>> GetAllTasks(string? search, bool? isCompleted)
+        public async Task<List<TaskItem>> GetAllTasks(string? search, bool? isCompleted, int page, int pageSize)
         {
             var query = _context.Tasks.AsQueryable();
             if (!string.IsNullOrEmpty(search)) {
@@ -24,6 +24,10 @@ namespace TaskManager.Repositories
             if (isCompleted != null) {
                 query = query.Where(t => t.IsCompleted == isCompleted);
             }
+            query = query.OrderBy(i => i.Id);
+            query = query.Skip((page - 1) * pageSize)
+                         .Take(pageSize);
+
             return await query.ToListAsync();
         }
 

@@ -4,7 +4,7 @@ namespace TaskManager.Services
 {
     public interface ITaskService
     {
-        Task<List<TaskItem>> GetAllTasks(string? search, bool? isCompleted);
+        Task<List<TaskItem>> GetAllTasks(string? search, bool? isCompleted, int page, int pageSize);
         Task<TaskItem?> GetTaskById(int id);
         Task<TaskItem> CreateTask(TaskItem item);
         Task<TaskItem?> UpdateTask(TaskItem item);
