@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.AspNetCore.Mvc;
-using TaskManager.Errors;
+﻿using TaskManager.Errors;
 using TaskManager.Exceptions;
 using TaskManager.Models;
 using TaskManager.Repositories;
@@ -16,9 +14,9 @@ namespace TaskManager.Services
             _repository = repository;
         }
 
-        public async Task<List<TaskItem>> GetAllTasks(string? search, bool? isCompleted, int page, int pageSize)
+        public async Task<List<TaskItem>> GetAllTasks(string? search, bool? isCompleted, int page, int pageSize, string sortBy, string sortDir)
         {
-            return await _repository.GetAllTasks(search, isCompleted, page, pageSize);
+            return await _repository.GetAllTasks(search, isCompleted, page, pageSize, TaskSortStringMapper.MapSortBy(sortBy), TaskSortStringMapper.MapSortDir(sortDir));
         }
 
         public async Task<TaskItem?> GetTaskById(int id)

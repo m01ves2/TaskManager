@@ -12,5 +12,11 @@ namespace TaskManager.Dtos
 
         [Range(1, 100)]
         public int PageSize { get; set; } = 20;
+
+        [AllowedValues("Id", "Title", "IsCompleted")]
+        public string SortBy { get; set; } = "id";
+
+        [AllowedValues("asc", "desc")]
+        public string SortDirection { get; set; } = "asc";
     }
 }

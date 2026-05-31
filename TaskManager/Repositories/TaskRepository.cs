@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using TaskManager.Data;
 using TaskManager.Models;
+using TaskManager.Services.Models;
 
 namespace TaskManager.Repositories
 {
@@ -14,7 +15,7 @@ namespace TaskManager.Repositories
             _context = context;
         }
 
-        public async Task<List<TaskItem>> GetAllTasks(string? search, bool? isCompleted, int page, int pageSize)
+        public async Task<List<TaskItem>> GetAllTasks(string? search, bool? isCompleted, int page, int pageSize, TaskSortBy sortBy, SortDirection sortDir)
         {
             var query = _context.Tasks.AsQueryable();
             if (!string.IsNullOrEmpty(search)) {
@@ -27,6 +28,10 @@ namespace TaskManager.Repositories
             query = query.OrderBy(i => i.Id);
             query = query.Skip((page - 1) * pageSize)
                          .Take(pageSize);
+
+            query = sortDir == SortDirection.Desc ? 
+                query.OrderByDescending(TaskSortEnumMapper.Map(sortBy)) : 
+                query.OrderBy(TaskSortEnumMapper.Map(sortBy));
 
             return await query.ToListAsync();
         }
