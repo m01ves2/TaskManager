@@ -12,11 +12,10 @@ namespace TaskManager.Features.Tasks.Persistence
 
         public TaskRepository(AppDbContext context)
         {
-            //Console.WriteLine("TaskRepository created");
             _context = context;
         }
 
-        public async Task<List<TaskItem>> GetAllTasks(string? search, bool? isCompleted, int page, int pageSize, TaskSortBy sortBy, SortDirection sortDir)
+        public async Task<PagedResult<TaskItem>> GetAllTasks(string? search, bool? isCompleted, int page, int pageSize, TaskSortBy sortBy, SortDirection sortDir)
         {
             var query = _context.Tasks.AsQueryable();
             if (!string.IsNullOrEmpty(search)) {
@@ -26,15 +25,22 @@ namespace TaskManager.Features.Tasks.Persistence
             if (isCompleted != null) {
                 query = query.Where(t => t.IsCompleted == isCompleted);
             }
-            query = query.OrderBy(i => i.Id);
+
+            var totalCount = await query.CountAsync();
+
+            query = (sortDir == SortDirection.Desc) ?
+                    query.OrderByDescending(TaskSortEnumMapper.Map(sortBy)) :
+                    query.OrderBy(TaskSortEnumMapper.Map(sortBy));
+
             query = query.Skip((page - 1) * pageSize)
                          .Take(pageSize);
 
-            query = sortDir == SortDirection.Desc ? 
-                query.OrderByDescending(TaskSortEnumMapper.Map(sortBy)) : 
-                query.OrderBy(TaskSortEnumMapper.Map(sortBy));
-
-            return await query.ToListAsync();
+            var items = await query.ToListAsync();
+            return new PagedResult<TaskItem>
+            {
+                Items = items,
+                TotalCount = totalCount,
+            };
         }
 
         public async Task<TaskItem?> GetTaskById(int id)

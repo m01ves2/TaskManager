@@ -16,9 +16,13 @@ namespace TaskManager.Common.Features.Tasks.Application
             _repository = repository;
         }
 
-        public async Task<List<TaskItem>> GetAllTasks(string? search, bool? isCompleted, int page, int pageSize, TaskSortBy sortBy, SortDirection sortDir)
+        public async Task<PagedResult<TaskItem>> GetAllTasks(string? search, bool? isCompleted, int page, int pageSize, TaskSortBy sortBy, SortDirection sortDir)
         {
-            return await _repository.GetAllTasks(search, isCompleted, page, pageSize, sortBy, sortDir);
+            var result = await _repository.GetAllTasks(search, isCompleted, page, pageSize, sortBy, sortDir);
+            result.Page = page;
+            result.PageSize = pageSize;
+            result.TotalPages = (int)Math.Ceiling(result.TotalCount / (double)pageSize);
+            return result;
         }
 
         public async Task<TaskItem?> GetTaskById(int id)
