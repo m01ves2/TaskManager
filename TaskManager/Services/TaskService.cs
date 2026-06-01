@@ -2,6 +2,7 @@
 using TaskManager.Exceptions;
 using TaskManager.Models;
 using TaskManager.Repositories;
+using TaskManager.Services.Models;
 
 namespace TaskManager.Services
 {
@@ -14,9 +15,9 @@ namespace TaskManager.Services
             _repository = repository;
         }
 
-        public async Task<List<TaskItem>> GetAllTasks(string? search, bool? isCompleted, int page, int pageSize, string sortBy, string sortDir)
+        public async Task<List<TaskItem>> GetAllTasks(string? search, bool? isCompleted, int page, int pageSize, TaskSortBy sortBy, SortDirection sortDir)
         {
-            return await _repository.GetAllTasks(search, isCompleted, page, pageSize, TaskSortStringMapper.MapSortBy(sortBy), TaskSortStringMapper.MapSortDir(sortDir));
+            return await _repository.GetAllTasks(search, isCompleted, page, pageSize, sortBy, sortDir);
         }
 
         public async Task<TaskItem?> GetTaskById(int id)

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Mvc;
 using TaskManager.Errors;
 
 namespace TaskManager.Configuration
@@ -28,7 +29,12 @@ namespace TaskManager.Configuration
                             }
                         );
                     };
-                });
+                })
+                .AddJsonOptions(options =>
+                {
+                    options.JsonSerializerOptions.Converters.Add(
+                        new JsonStringEnumConverter());
+                }); ;
 
             services.AddSwaggerGen();
 
