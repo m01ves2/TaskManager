@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Mvc;
-using TaskManager.Errors;
+using TaskManager.Common.Errors;
 
 namespace TaskManager.Configuration
 {

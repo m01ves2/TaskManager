@@ -1,5 +1,6 @@
-﻿using TaskManager.Repositories;
-using TaskManager.Services;
+﻿using TaskManager.Common.Features.Tasks.Application;
+using TaskManager.Features.Tasks.Application;
+using TaskManager.Features.Tasks.Persistence;
 
 namespace TaskManager.Configuration
 {

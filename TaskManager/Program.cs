@@ -1,5 +1,5 @@
+using TaskManager.Common.Middleware;
 using TaskManager.Configuration;
-using TaskManager.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 

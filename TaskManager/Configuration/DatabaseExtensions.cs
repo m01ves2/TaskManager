@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using TaskManager.Data;
-using TaskManager.Models;
+using TaskManager.Features.Tasks.Domain;
+using TaskManager.Infrastructure;
 
 namespace TaskManager.Configuration
 {
