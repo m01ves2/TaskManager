@@ -5,7 +5,6 @@ namespace TaskManager.Features.Tasks.Persistence
 {
     public interface ITaskRepository
     {
-        //Task<List<TaskItem>> GetAllTasks(string? search, bool? isCompleted, int page, int pageSize, TaskSortBy sortBy, SortDirection sortDir);
         Task<PagedResult<TaskItem>> GetAllTasks(string? search, bool? isCompleted, int page, int pageSize, TaskSortBy sortBy, SortDirection sortDir);
         Task<TaskItem?> GetTaskById(int id);
         Task<TaskItem?> GetTaskByTitle(string title);

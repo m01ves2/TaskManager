@@ -25,9 +25,14 @@ namespace TaskManager.Common.Features.Tasks.Application
             return result;
         }
 
-        public async Task<TaskItem?> GetTaskById(int id)
+        public async Task<TaskItem> GetTaskById(int id)
         {
-            return await _repository.GetTaskById(id);
+            var result = await _repository.GetTaskById(id);
+
+            if (result == null)
+                throw new NotFoundException(ErrorCodes.TaskDoesNotExist, "Task doesn't exist");
+
+            return result;
         }
 
         public async Task<TaskItem> CreateTask(TaskItem item)
@@ -44,7 +49,7 @@ namespace TaskManager.Common.Features.Tasks.Application
             return await _repository.CreateTask(item);
         }
 
-        public async Task<TaskItem?> UpdateTask(TaskItem item)
+        public async Task<TaskItem> UpdateTask(TaskItem item)
         {
             item.Title = item.Title.Trim();
 
@@ -55,7 +60,11 @@ namespace TaskManager.Common.Features.Tasks.Application
             if (existing != null && existing.Id != item.Id)
                 throw new BusinessException(ErrorCodes.TaskAlreadyExists, "Task already exists");
 
-            return await _repository.UpdateTask(item);
+            var result = await _repository.UpdateTask(item);
+            if (result == null)
+                throw new NotFoundException(ErrorCodes.TaskDoesNotExist, "Task doesn't exist");
+
+            return result;
         }
 
         private void ValidateTitle(TaskItem item)
@@ -64,9 +73,13 @@ namespace TaskManager.Common.Features.Tasks.Application
                 throw new BusinessException(ErrorCodes.TaskTitleInvalid, "Title cannot be empty");
         }
 
-        public async Task<TaskItem?> DeleteTask(int id)
+        public async Task<TaskItem> DeleteTask(int id)
         {
-            return await _repository.DeleteTask(id);
+            var result = await _repository.DeleteTask(id);
+            if (result == null)
+                throw new NotFoundException(ErrorCodes.TaskDoesNotExist, "Task doesn't exist");
+
+            return result;
         }
 
         public async Task<TaskItem> CompleteTask(int id)
@@ -74,7 +87,7 @@ namespace TaskManager.Common.Features.Tasks.Application
             var taskItem = await _repository.CompleteTask(id);
 
             if (taskItem == null)
-                throw new BusinessException(ErrorCodes.TaskDoesNotExist, "Task doesn't exist");
+                throw new NotFoundException(ErrorCodes.TaskDoesNotExist, "Task doesn't exist");
 
             return taskItem;
         }

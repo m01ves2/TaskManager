@@ -18,7 +18,8 @@ namespace TaskManager.Features.Tasks.Controllers
         {
             _taskService = taskService;
         }
-        
+
+        [HttpGet]
         public async Task<ActionResult<PagedResult<ReadTaskItemDto>>> GetAll([FromQuery] TaskQueryDto query)
         {
             var taskItemsPagedResult = await _taskService.GetAllTasks(query.Search, query.IsCompleted, query.Page, query.PageSize, query.SortBy, query.SortDirection);
@@ -38,13 +39,8 @@ namespace TaskManager.Features.Tasks.Controllers
         public async Task<ActionResult<ReadTaskItemDto>> GetById(int id)
         {
             var taskItem = await _taskService.GetTaskById(id);
-
-            if (taskItem != null) {
-                var responseDto = TaskItemMapper.ToReadDto(taskItem);
-                return Ok(responseDto);
-            }
-
-            return NotFound();
+            var responseDto = TaskItemMapper.ToReadDto(taskItem);
+            return Ok(responseDto);
         }
 
         [HttpPost]
@@ -54,7 +50,7 @@ namespace TaskManager.Features.Tasks.Controllers
             var createdTaskItem = await _taskService.CreateTask(taskItem);
             var responseDto = TaskItemMapper.ToReadDto(createdTaskItem);
 
-            return CreatedAtAction( nameof(GetById),
+            return CreatedAtAction(nameof(GetById),
                                     new { id = responseDto.Id },
                                     responseDto);
         }
@@ -63,9 +59,6 @@ namespace TaskManager.Features.Tasks.Controllers
         public async Task<ActionResult<ReadTaskItemDto>> CompleteTask(int id)
         {
             var taskItem = await _taskService.CompleteTask(id);
-            if (taskItem == null)
-                return NotFound();
-
             var responseDto = TaskItemMapper.ToReadDto(taskItem);
             return Ok(responseDto);
         }
@@ -76,12 +69,8 @@ namespace TaskManager.Features.Tasks.Controllers
         {
             var taskItem = TaskItemMapper.FromUpdateDto(id, updateDto);
             var updatedTaskItem = await _taskService.UpdateTask(taskItem);
-
-            if (updatedTaskItem != null) {
-                var responseDto = TaskItemMapper.ToReadDto(updatedTaskItem);
-                return Ok(responseDto);
-            }
-            return NotFound();
+            var responseDto = TaskItemMapper.ToReadDto(updatedTaskItem);
+            return Ok(responseDto);
         }
 
 
@@ -89,11 +78,7 @@ namespace TaskManager.Features.Tasks.Controllers
         public async Task<IActionResult> Delete(int id)
         {
             var deletedTaskItem = await _taskService.DeleteTask(id);
-
-            if (deletedTaskItem != null) {
-                return NoContent();
-            }
-            return NotFound();
+            return NoContent();
         }
     }
 }

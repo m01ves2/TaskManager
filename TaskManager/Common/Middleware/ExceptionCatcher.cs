@@ -18,6 +18,17 @@ namespace TaskManager.Common.Middleware
             try {
                 await _next(context);
             }
+            catch (NotFoundException e) {
+                context.Response.StatusCode = StatusCodes.Status404NotFound;
+                context.Response.ContentType = "application/json";
+                await context.Response.WriteAsJsonAsync(
+                    new ErrorResponse()
+                    {
+                        Code = e.Code,
+                        Message = e.Message,
+                    }
+                );
+            }
             catch (BusinessException e) {
                 context.Response.StatusCode = StatusCodes.Status400BadRequest;
                 context.Response.ContentType = "application/json";
