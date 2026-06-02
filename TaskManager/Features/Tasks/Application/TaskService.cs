@@ -46,6 +46,9 @@ namespace TaskManager.Common.Features.Tasks.Application
             if (existing != null)
                 throw new BusinessException(ErrorCodes.TaskAlreadyExists, "Task already exists");
 
+            item.CreatedAt = DateTime.UtcNow;
+            item.UpdatedAt = DateTime.UtcNow;
+
             return await _repository.CreateTask(item);
         }
 
@@ -60,6 +63,7 @@ namespace TaskManager.Common.Features.Tasks.Application
             if (existing != null && existing.Id != item.Id)
                 throw new BusinessException(ErrorCodes.TaskAlreadyExists, "Task already exists");
 
+            item.UpdatedAt = DateTime.UtcNow;
             var result = await _repository.UpdateTask(item);
             if (result == null)
                 throw new NotFoundException(ErrorCodes.TaskDoesNotExist, "Task doesn't exist");
