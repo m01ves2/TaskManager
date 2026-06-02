@@ -1,4 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using TaskManager.Common.Errors;
+using TaskManager.Common.Exceptions;
 using TaskManager.Features.Tasks.Application;
 using TaskManager.Features.Tasks.Application.Models;
 using TaskManager.Features.Tasks.Domain;
@@ -50,7 +52,7 @@ namespace TaskManager.Features.Tasks.Persistence
 
         public async Task<TaskItem?> GetTaskByTitle(string title)
         {
-            return await _context.Tasks.FirstOrDefaultAsync(i =>i.Title == title);
+            return await _context.Tasks.FirstOrDefaultAsync(i => i.Title == title);
         }
 
         public async Task<TaskItem> CreateTask(TaskItem item)
@@ -84,20 +86,6 @@ namespace TaskManager.Features.Tasks.Persistence
 
             _context.Tasks.Remove(item);
             await _context.SaveChangesAsync();
-            
-            return item;
-        }
-
-        public async Task<TaskItem?> CompleteTask(int id)
-        {
-            var item = await _context.Tasks.FirstOrDefaultAsync(x => x.Id == id);
-
-            if (item == null)
-                return null;
-
-            item.IsCompleted = true;
-
-            await _context.SaveChangesAsync();
 
             return item;
         }
@@ -106,5 +94,6 @@ namespace TaskManager.Features.Tasks.Persistence
         {
             await _context.SaveChangesAsync();
         }
+
     }
 }

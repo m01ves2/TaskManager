@@ -88,12 +88,17 @@ namespace TaskManager.Common.Features.Tasks.Application
 
         public async Task<TaskItem> CompleteTask(int id)
         {
-            var taskItem = await _repository.CompleteTask(id);
+            var item = await _repository.GetTaskById(id);
 
-            if (taskItem == null)
+            if (item == null)
                 throw new NotFoundException(ErrorCodes.TaskDoesNotExist, "Task doesn't exist");
 
-            return taskItem;
+            item.IsCompleted = true;
+            item.UpdatedAt = DateTime.UtcNow;
+
+            await _repository.SaveChanges();
+
+            return item;
         }
     }
 }
