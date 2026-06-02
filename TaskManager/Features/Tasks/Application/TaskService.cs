@@ -96,9 +96,10 @@ namespace TaskManager.Common.Features.Tasks.Application
             item.IsCompleted = true;
             item.UpdatedAt = DateTime.UtcNow;
 
-            await _repository.SaveChanges();
-
-            return item;
+            var result = await _repository.UpdateTask(item);
+            //if (result == null)
+            //    throw new NotFoundException(ErrorCodes.TaskDoesNotExist, "Task doesn't exist");
+            return result;
         }
     }
 }
