@@ -1,8 +1,10 @@
 using Microsoft.AspNetCore.Mvc;
 using TaskManager.Features.Tasks.Application;
 using TaskManager.Features.Tasks.Application.Models;
+using TaskManager.Features.Tasks.Domain;
 using TaskManager.Features.Tasks.Dtos;
 using TaskManager.Features.Tasks.Mappers;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace TaskManager.Features.Tasks.Controllers
 {
@@ -42,6 +44,22 @@ namespace TaskManager.Features.Tasks.Controllers
             return Ok(responseDto);
         }
 
+        [HttpGet("deleted")]
+        public async Task<ActionResult<PagedResult<ReadTaskItemDto>>> GetDeleted([FromQuery] TaskQueryDto query)
+        {
+            var deletedTaskItemsPagedResult = await _taskService.GetDeletedTasks(query.Page, query.PageSize);
+            var deletedTaskItemsDtoPagedResult = new PagedResult<ReadTaskItemDto>
+            {
+                Items = deletedTaskItemsPagedResult.Items.Select(x => TaskItemMapper.ToReadDto(x)).ToList(),
+                TotalCount = deletedTaskItemsPagedResult.TotalCount,
+                Page = deletedTaskItemsPagedResult.Page,
+                PageSize = deletedTaskItemsPagedResult.PageSize,
+                TotalPages = deletedTaskItemsPagedResult.TotalPages
+            };
+
+            return Ok(deletedTaskItemsDtoPagedResult);
+        }
+
         [HttpPost]
         public async Task<ActionResult<ReadTaskItemDto>> Create(CreateTaskItemDto createDto)
         {
@@ -77,6 +95,21 @@ namespace TaskManager.Features.Tasks.Controllers
         public async Task<IActionResult> Delete(int id)
         {
             var deletedTaskItem = await _taskService.DeleteTask(id);
+            return NoContent();
+        }
+
+        [HttpPost("{id}/restore")]
+        public async Task<ActionResult<ReadTaskItemDto>> Restore(int id)
+        {
+            var restoredTaskItem = await _taskService.RestoreTask(id);
+            var responseDto = TaskItemMapper.ToReadDto(restoredTaskItem);
+            return Ok(responseDto);
+        }
+
+        [HttpDelete("{id}/permanently")]
+        public async Task<IActionResult> DeletePermanently(int id)
+        {
+            var deletedTaskItem = await _taskService.DeletePermanentlyTask(id);
             return NoContent();
         }
     }

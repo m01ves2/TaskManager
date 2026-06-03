@@ -35,6 +35,14 @@ namespace TaskManager.Common.Features.Tasks.Application
             return result;
         }
 
+        public async Task<PagedResult<TaskItem>> GetDeletedTasks(int page, int pageSize)
+        {
+            var result = await _repository.GetDeletedTasks(page, pageSize);
+            result.Page = page;
+            result.PageSize = pageSize;
+            result.TotalPages = (int)Math.Ceiling(result.TotalCount / (double)pageSize);
+            return result;
+        }
         public async Task<TaskItem> CreateTask(TaskItem item)
         {
             item.Title = item.Title.Trim();
@@ -81,6 +89,24 @@ namespace TaskManager.Common.Features.Tasks.Application
         public async Task<TaskItem> DeleteTask(int id)
         {
             var result = await _repository.DeleteTask(id);
+            if (result == null)
+                throw new NotFoundException(ErrorCodes.TaskDoesNotExist, "Task doesn't exist");
+
+            return result;
+        }
+
+        public async Task<TaskItem> DeletePermanentlyTask(int id)
+        {
+            var result = await _repository.DeletePermanentlyTask(id);
+            if (result == null)
+                throw new NotFoundException(ErrorCodes.TaskDoesNotExist, "Task doesn't exist");
+
+            return result;
+        }
+
+        public async Task<TaskItem> RestoreTask(int id)
+        {
+            var result = await _repository.RestoreTask(id);
             if (result == null)
                 throw new NotFoundException(ErrorCodes.TaskDoesNotExist, "Task doesn't exist");
 

@@ -14,6 +14,7 @@ namespace TaskManager.Features.Tasks.Mappers
                 Status = item.Status,
                 CreatedAt = item.CreatedAt,
                 UpdatedAt = item.UpdatedAt,
+                DeletedAt = item.DeletedAt,
             };
         }
 
