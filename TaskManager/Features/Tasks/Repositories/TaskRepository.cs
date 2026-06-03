@@ -1,6 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using TaskManager.Common.Errors;
-using TaskManager.Common.Exceptions;
 using TaskManager.Features.Tasks.Application;
 using TaskManager.Features.Tasks.Application.Models;
 using TaskManager.Features.Tasks.Domain;
@@ -17,15 +15,15 @@ namespace TaskManager.Features.Tasks.Persistence
             _context = context;
         }
 
-        public async Task<PagedResult<TaskItem>> GetAllTasks(string? search, bool? isCompleted, int page, int pageSize, TaskSortBy sortBy, SortDirection sortDir)
+        public async Task<PagedResult<TaskItem>> GetAllTasks(string? search, TaskItemStatus? status, int page, int pageSize, TaskSortBy sortBy, SortDirection sortDir)
         {
             var query = _context.Tasks.AsQueryable();
             if (!string.IsNullOrEmpty(search)) {
                 var searchNormalized = search.Trim();
                 query = query.Where(t => t.Title.Contains(searchNormalized));
             }
-            if (isCompleted != null) {
-                query = query.Where(t => t.IsCompleted == isCompleted);
+            if (status != null) {
+                query = query.Where(t => t.Status == status);
             }
 
             var totalCount = await query.CountAsync();
@@ -69,7 +67,9 @@ namespace TaskManager.Features.Tasks.Persistence
                 return null;
 
             item.Title = changedItem.Title;
-            item.IsCompleted = changedItem.IsCompleted;
+            item.Status = changedItem.Status;
+            item.UpdatedAt = changedItem.UpdatedAt;
+            item.CreatedAt = changedItem.CreatedAt;
 
             await _context.SaveChangesAsync();
 

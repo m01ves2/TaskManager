@@ -11,7 +11,9 @@ namespace TaskManager.Features.Tasks.Mappers
             {
                 Id = item.Id,
                 Title = item.Title,
-                IsCompleted = item.IsCompleted
+                Status = item.Status,
+                CreatedAt = item.CreatedAt,
+                UpdatedAt = item.UpdatedAt,
             };
         }
 
@@ -20,7 +22,7 @@ namespace TaskManager.Features.Tasks.Mappers
             return new TaskItem()
             {
                 Title = createTaskItemDto.Title,
-                IsCompleted = createTaskItemDto.IsCompleted
+                //Status = TaskItemStatus.New,
             };
         }
 
@@ -30,7 +32,7 @@ namespace TaskManager.Features.Tasks.Mappers
             {
                 Id = id,
                 Title = updateTaskItemDto.Title,
-                IsCompleted = updateTaskItemDto.IsCompleted
+                Status = updateTaskItemDto.Status,
             };
         }
     }

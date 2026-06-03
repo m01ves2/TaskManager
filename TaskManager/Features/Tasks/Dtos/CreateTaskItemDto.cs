@@ -7,6 +7,6 @@ namespace TaskManager.Features.Tasks.Dtos
         [Required] //transport validation: API contract, malformed request, bad client input
         [MinLength(3)] //transport validation
         public string Title { get; set; }
-        public bool IsCompleted { get; set; }
+        //public bool IsCompleted { get; set; }
     }
 }

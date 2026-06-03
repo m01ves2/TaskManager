@@ -1,12 +1,14 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using TaskManager.Features.Tasks.Application.Models;
+using TaskManager.Features.Tasks.Domain;
 
 namespace TaskManager.Features.Tasks.Dtos
 {
     public class TaskQueryDto
     {
         public string? Search { get; set; }
-        public bool? IsCompleted { get; set; }
+        //public bool? IsCompleted { get; set; }
+        public TaskItemStatus? Status { get; set; }
 
         [Range(1, int.MaxValue)]
         public int Page { get; set; } = 1;

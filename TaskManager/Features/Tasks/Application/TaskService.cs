@@ -16,9 +16,9 @@ namespace TaskManager.Common.Features.Tasks.Application
             _repository = repository;
         }
 
-        public async Task<PagedResult<TaskItem>> GetAllTasks(string? search, bool? isCompleted, int page, int pageSize, TaskSortBy sortBy, SortDirection sortDir)
+        public async Task<PagedResult<TaskItem>> GetAllTasks(string? search, TaskItemStatus? status, int page, int pageSize, TaskSortBy sortBy, SortDirection sortDir)
         {
-            var result = await _repository.GetAllTasks(search, isCompleted, page, pageSize, sortBy, sortDir);
+            var result = await _repository.GetAllTasks(search, status, page, pageSize, sortBy, sortDir);
             result.Page = page;
             result.PageSize = pageSize;
             result.TotalPages = (int)Math.Ceiling(result.TotalCount / (double)pageSize);
@@ -46,6 +46,7 @@ namespace TaskManager.Common.Features.Tasks.Application
             if (existing != null)
                 throw new BusinessException(ErrorCodes.TaskAlreadyExists, "Task already exists");
 
+            item.Status = TaskItemStatus.New;
             item.CreatedAt = DateTime.UtcNow;
             item.UpdatedAt = DateTime.UtcNow;
 
@@ -93,12 +94,13 @@ namespace TaskManager.Common.Features.Tasks.Application
             if (item == null)
                 throw new NotFoundException(ErrorCodes.TaskDoesNotExist, "Task doesn't exist");
 
-            item.IsCompleted = true;
+            item.Status = TaskItemStatus.Completed;
             item.UpdatedAt = DateTime.UtcNow;
 
             var result = await _repository.UpdateTask(item);
-            //if (result == null)
-            //    throw new NotFoundException(ErrorCodes.TaskDoesNotExist, "Task doesn't exist");
+            if (result == null)
+                throw new NotFoundException(ErrorCodes.TaskDoesNotExist, "Task doesn't exist");
+
             return result;
         }
     }

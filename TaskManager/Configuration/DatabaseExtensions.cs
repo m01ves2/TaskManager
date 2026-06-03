@@ -23,8 +23,8 @@ namespace TaskManager.Configuration
 
             if (!context.Tasks.Any()) {
                 context.Tasks.AddRange(
-                    new TaskItem { Title = "Learn ASP.NET Core", IsCompleted = false },
-                    new TaskItem { Title = "Learn Controllers", IsCompleted = true }
+                    new TaskItem { Title = "Learn ASP.NET Core", Status = TaskItemStatus.New },
+                    new TaskItem { Title = "Learn Controllers", Status = TaskItemStatus.InProgress }
                 );
 
                 context.SaveChanges();

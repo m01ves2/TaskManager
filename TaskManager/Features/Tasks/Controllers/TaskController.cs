@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using TaskManager.Features.Tasks.Application;
 using TaskManager.Features.Tasks.Application.Models;
-using TaskManager.Features.Tasks.Domain;
 using TaskManager.Features.Tasks.Dtos;
 using TaskManager.Features.Tasks.Mappers;
 
@@ -22,7 +21,7 @@ namespace TaskManager.Features.Tasks.Controllers
         [HttpGet]
         public async Task<ActionResult<PagedResult<ReadTaskItemDto>>> GetAll([FromQuery] TaskQueryDto query)
         {
-            var taskItemsPagedResult = await _taskService.GetAllTasks(query.Search, query.IsCompleted, query.Page, query.PageSize, query.SortBy, query.SortDirection);
+            var taskItemsPagedResult = await _taskService.GetAllTasks(query.Search, query.Status, query.Page, query.PageSize, query.SortBy, query.SortDirection);
             var taskItemsDtoPagedResult = new PagedResult<ReadTaskItemDto>
             {
                 Items = taskItemsPagedResult.Items.Select(x => TaskItemMapper.ToReadDto(x)).ToList(),

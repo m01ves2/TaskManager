@@ -12,7 +12,7 @@ namespace TaskManager.Features.Tasks.Application
             {
                 TaskSortBy.Id => x => x.Id,
                 TaskSortBy.Title => x => x.Title,
-                TaskSortBy.IsCompleted => x => x.IsCompleted,
+                TaskSortBy.Status => x => x.Status,
                 _ => x => x.Id
             };
         }
