@@ -91,7 +91,6 @@ namespace TaskManager.Features.Tasks.Persistence
             item.Title = changedItem.Title;
             item.Status = changedItem.Status;
             item.UpdatedAt = changedItem.UpdatedAt;
-            item.CreatedAt = changedItem.CreatedAt;
 
             await _context.SaveChangesAsync();
 
