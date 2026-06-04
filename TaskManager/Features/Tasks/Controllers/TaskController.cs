@@ -1,10 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
+using TaskManager.Common.Errors;
 using TaskManager.Features.Tasks.Application;
 using TaskManager.Features.Tasks.Application.Models;
-using TaskManager.Features.Tasks.Domain;
 using TaskManager.Features.Tasks.Dtos;
 using TaskManager.Features.Tasks.Mappers;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace TaskManager.Features.Tasks.Controllers
 {
@@ -20,7 +19,10 @@ namespace TaskManager.Features.Tasks.Controllers
             _taskService = taskService;
         }
 
+
         [HttpGet]
+        [ProducesResponseType(typeof(PagedResult<ReadTaskItemDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<PagedResult<ReadTaskItemDto>>> GetAll([FromQuery] TaskQueryDto query)
         {
             var taskItemsPagedResult = await _taskService.GetAllTasks(query.Search, query.Status, query.Page, query.PageSize, query.SortBy, query.SortDirection);
@@ -36,7 +38,11 @@ namespace TaskManager.Features.Tasks.Controllers
             return Ok(taskItemsDtoPagedResult);
         }
 
+
         [HttpGet("{id}")]
+        [ProducesResponseType(typeof(ReadTaskItemDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)] // NotFound через NotFoundException
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<ReadTaskItemDto>> GetById(int id)
         {
             var taskItem = await _taskService.GetTaskById(id);
@@ -44,7 +50,10 @@ namespace TaskManager.Features.Tasks.Controllers
             return Ok(responseDto);
         }
 
+
         [HttpGet("deleted")]
+        [ProducesResponseType(typeof(PagedResult<ReadTaskItemDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<PagedResult<ReadTaskItemDto>>> GetDeleted([FromQuery] TaskQueryDto query)
         {
             var deletedTaskItemsPagedResult = await _taskService.GetDeletedTasks(query.Page, query.PageSize);
@@ -60,7 +69,11 @@ namespace TaskManager.Features.Tasks.Controllers
             return Ok(deletedTaskItemsDtoPagedResult);
         }
 
+
         [HttpPost]
+        [ProducesResponseType(typeof(ReadTaskItemDto), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)] // BusinessException
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<ReadTaskItemDto>> Create(CreateTaskItemDto createDto)
         {
             var taskItem = TaskItemMapper.FromCreateDto(createDto);
@@ -72,16 +85,12 @@ namespace TaskManager.Features.Tasks.Controllers
                                     responseDto);
         }
 
-        [HttpPost("{id}/complete")]
-        public async Task<ActionResult<ReadTaskItemDto>> CompleteTask(int id)
-        {
-            var taskItem = await _taskService.CompleteTask(id);
-            var responseDto = TaskItemMapper.ToReadDto(taskItem);
-            return Ok(responseDto);
-        }
-
 
         [HttpPut("{id}")]
+        [ProducesResponseType(typeof(ReadTaskItemDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)] // NotFoundException
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)] // BusinessException
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<ReadTaskItemDto>> Update(int id, UpdateTaskItemDto updateDto)
         {
             var taskItem = TaskItemMapper.FromUpdateDto(id, updateDto);
@@ -92,13 +101,32 @@ namespace TaskManager.Features.Tasks.Controllers
 
 
         [HttpDelete("{id}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)] // NotFoundException
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Delete(int id)
         {
             var deletedTaskItem = await _taskService.DeleteTask(id);
             return NoContent();
         }
 
+
+        [HttpPost("{id}/complete")]
+        [ProducesResponseType(typeof(ReadTaskItemDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult<ReadTaskItemDto>> CompleteTask(int id)
+        {
+            var taskItem = await _taskService.CompleteTask(id);
+            var responseDto = TaskItemMapper.ToReadDto(taskItem);
+            return Ok(responseDto);
+        }
+
+
         [HttpPost("{id}/restore")]
+        [ProducesResponseType(typeof(ReadTaskItemDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<ReadTaskItemDto>> Restore(int id)
         {
             var restoredTaskItem = await _taskService.RestoreTask(id);
@@ -106,7 +134,11 @@ namespace TaskManager.Features.Tasks.Controllers
             return Ok(responseDto);
         }
 
+
         [HttpDelete("{id}/permanently")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> DeletePermanently(int id)
         {
             var deletedTaskItem = await _taskService.DeletePermanentlyTask(id);
