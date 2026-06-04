@@ -7,8 +7,8 @@ using TaskManager.Features.Tasks.Mappers;
 
 namespace TaskManager.Features.Tasks.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
+    [Route("api/[controller]")]
     public class TaskController : ControllerBase
     {
         private readonly ITaskService _taskService;
@@ -20,6 +20,11 @@ namespace TaskManager.Features.Tasks.Controllers
         }
 
 
+        /// <summary>
+        /// Get All tasks with filtering, pagination and sorting 
+        /// </summary>
+        /// <param name="query">Parameters of filtering, pagination and sorting</param>
+        /// <returns>Task list with meta data</returns>
         [HttpGet]
         [ProducesResponseType(typeof(PagedResult<ReadTaskItemDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
@@ -39,6 +44,11 @@ namespace TaskManager.Features.Tasks.Controllers
         }
 
 
+        /// <summary>
+        /// Get task by id
+        /// </summary>
+        /// <param name="id">Task's id</param>
+        /// <returns>Task</returns>
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(ReadTaskItemDto), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)] // NotFound через NotFoundException
@@ -51,6 +61,11 @@ namespace TaskManager.Features.Tasks.Controllers
         }
 
 
+        /// <summary>
+        /// Get All deleted tasks with pagination
+        /// </summary>
+        /// <param name="query">Parameters of pagination</param>
+        /// <returns>Task list with meta data</returns>
         [HttpGet("deleted")]
         [ProducesResponseType(typeof(PagedResult<ReadTaskItemDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
@@ -70,6 +85,11 @@ namespace TaskManager.Features.Tasks.Controllers
         }
 
 
+        /// <summary>
+        /// Create task
+        /// </summary>
+        /// <param name="createDto">Attributes for task creation</param>
+        /// <returns>Created task</returns>
         [HttpPost]
         [ProducesResponseType(typeof(ReadTaskItemDto), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)] // BusinessException
@@ -86,6 +106,12 @@ namespace TaskManager.Features.Tasks.Controllers
         }
 
 
+        /// <summary>
+        /// Update task
+        /// </summary>
+        /// <param name="id">Task's id</param>
+        /// <param name="updateDto">Attributes to change</param>
+        /// <returns>Updated task</returns>
         [HttpPut("{id}")]
         [ProducesResponseType(typeof(ReadTaskItemDto), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)] // NotFoundException
@@ -100,6 +126,10 @@ namespace TaskManager.Features.Tasks.Controllers
         }
 
 
+        /// <summary>
+        /// Delete task
+        /// </summary>
+        /// <param name="id">Task's id</param>
         [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)] // NotFoundException
@@ -110,7 +140,11 @@ namespace TaskManager.Features.Tasks.Controllers
             return NoContent();
         }
 
-
+        /// <summary>
+        /// Check task as completed
+        /// </summary>
+        /// <param name="id">Task's id</param>
+        /// <returns>Completed task</returns>
         [HttpPost("{id}/complete")]
         [ProducesResponseType(typeof(ReadTaskItemDto), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
@@ -122,7 +156,11 @@ namespace TaskManager.Features.Tasks.Controllers
             return Ok(responseDto);
         }
 
-
+        /// <summary>
+        /// Restore task
+        /// </summary>
+        /// <param name="id">Task's id to restore</param>
+        /// <returns>Restored task</returns>
         [HttpPost("{id}/restore")]
         [ProducesResponseType(typeof(ReadTaskItemDto), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
@@ -134,7 +172,10 @@ namespace TaskManager.Features.Tasks.Controllers
             return Ok(responseDto);
         }
 
-
+        /// <summary>
+        /// Permanently delete task
+        /// </summary>
+        /// <param name="id">Task's id to delete permanently</param>
         [HttpDelete("{id}/permanently")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]

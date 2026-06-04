@@ -1,5 +1,7 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.Reflection;
+using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.OpenApi.Models;
 using TaskManager.Common.Errors;
 
 namespace TaskManager.Configuration
@@ -36,7 +38,21 @@ namespace TaskManager.Configuration
                         new JsonStringEnumConverter());
                 }); ;
 
-            services.AddSwaggerGen();
+            //include XML to Swagger:
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Title = "TaskManager API",
+                    Version = "v1",
+                    Description = "Task management system built with ASP.NET Core and EF Core"
+                });
+
+                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+
+                c.IncludeXmlComments(xmlPath);
+            });
 
             return services;
         }
