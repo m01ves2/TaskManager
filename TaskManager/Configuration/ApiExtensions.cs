@@ -34,9 +34,9 @@ namespace TaskManager.Configuration
                 })
                 .AddJsonOptions(options =>
                 {
-                    options.JsonSerializerOptions.Converters.Add(
-                        new JsonStringEnumConverter());
-                }); ;
+                    options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+                    options.JsonSerializerOptions.PropertyNamingPolicy = null; // чтобы сохранить PascalCase
+                });
 
             //include XML to Swagger:
             services.AddSwaggerGen(c =>
