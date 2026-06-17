@@ -1,0 +1,39 @@
+﻿@page "/tasks/create"
+@using TaskManager.Features.Tasks.Dtos
+@using TaskManager.UI.Services
+@inject TaskApiService TaskService
+@inject NavigationManager Navigation
+
+<h3>Create Task</h3>
+
+<p>Title: @task.Title</p>
+
+<input @bind="task.Title" />
+
+<button @onclick="CreateTask" disabled="@isLoading">
+    Create
+</button>
+
+@if (isLoading) {
+    <p>Creating...</p>
+}
+
+@code {
+    private CreateTaskItemDto task = new();
+    private bool isLoading;
+
+    private async Task CreateTask()
+    {
+        if (isLoading) return;
+
+        isLoading = true;
+
+        await TaskService.CreateTaskAsync(task);
+
+        task = new CreateTaskItemDto();
+
+        isLoading = false;
+
+        Navigation.NavigateTo("/tasks");
+    }
+}
