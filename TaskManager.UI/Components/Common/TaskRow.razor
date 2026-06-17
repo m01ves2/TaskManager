@@ -1,0 +1,26 @@
+﻿@using TaskManager.Features.Tasks.Dtos
+
+<tr>
+    <td>@Task.Id</td>
+    <td>@Task.Title</td>
+    <td>@Task.Status</td>
+    <td>@Task.CreatedAt</td>
+    <td>@Task.UpdatedAt</td>
+    <td>
+        <button class="btn btn-success btn-sm" @onclick="@OnCompleteCallback">Complete</button>
+        <button class="btn btn-danger btn-sm" @onclick="@OnDeleteCallback">Delete</button>
+    </td>
+</tr>
+
+@code {
+    [Parameter]
+    public EventCallback OnCompleteCallback { get; set; }
+    
+    [Parameter]
+    public EventCallback OnDeleteCallback { get; set; }
+
+    [Parameter]
+    public ReadTaskItemDto Task { get; set; }
+
+    
+}

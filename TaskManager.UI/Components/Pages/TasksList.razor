@@ -2,6 +2,7 @@
 @page "/tasks"
 @using TaskManager.Features.Tasks.Application.Models
 @using TaskManager.Features.Tasks.Dtos
+@using TaskManager.UI.Components.Common
 @inject TaskManager.UI.Services.TaskApiService TaskService
 
 <h3>Tasks List</h3>
@@ -26,17 +27,7 @@ else {
         </thead>
         <tbody>
             @foreach (var task in tasks.Items) {
-                <tr>
-                    <td>@task.Id</td>
-                    <td>@task.Title</td>
-                    <td>@task.Status</td>
-                    <td>@task.CreatedAt</td>
-                    <td>@task.UpdatedAt</td>
-                    <td>
-                        <button class="btn btn-success btn-sm" @onclick="() => CompleteTask(task.Id)">Complete</button>
-                        <button class="btn btn-danger btn-sm" @onclick="() => DeleteTask(task.Id)">Delete</button>
-                    </td>
-                </tr>
+                <TaskRow Task="@task" OnCompleteCallback="@(() => CompleteTask(task.Id))" OnDeleteCallback="@(() => DeleteTask(task.Id))"/>
             }
         </tbody>
     </table>
@@ -55,21 +46,10 @@ else {
         await TaskService.CompleteTaskAsync(id);
         tasks = await TaskService.GetTasksAsync();
     }
-    // private async Task CompleteTask(int id)
-    // {
-    //     tasks.Items[0].Title = "CLICKED";
-
-    //     await InvokeAsync(StateHasChanged);
-    // }
 
     private async Task DeleteTask(int id)
     {
         await TaskService.DeleteTaskAsync(id);
         tasks = await TaskService.GetTasksAsync();
     }
-
-    // private void Test()
-    // {
-    //     Console.WriteLine("TEST CLICK");
-    // }
 }
