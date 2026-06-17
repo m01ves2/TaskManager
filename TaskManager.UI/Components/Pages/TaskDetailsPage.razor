@@ -1,0 +1,61 @@
+﻿@page "/tasks/{id:int}"
+@using TaskManager.Features.Tasks.Dtos
+@inject TaskManager.UI.Services.TaskApiService TaskService
+@inject NavigationManager Navigation
+
+<h3>Task Details</h3>
+
+@if (isLoading) {
+    <p>Loading tasks...</p>
+}
+else if (Task == null) {
+    <p>No task found</p>
+}
+else {
+    <table class="table table-striped">
+        <tbody>
+            <tr><td>Title: @Task.Title</td></tr>
+            <tr><td>Status: @Task.Status</td></tr>
+            <tr><td>Created: @Task.CreatedAt</td></tr>
+            <tr><td>Updated: @Task.UpdatedAt</td></tr>
+            @if (Task.DeletedAt != null) {
+                <tr><td>Deleted @Task.DeletedAt</td></tr>
+            }
+        </tbody>
+    </table>
+}
+<a href="/tasks" class="btn btn-primary">
+    Back
+</a>
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    public ReadTaskItemDto? Task { get; set; }
+    private bool isLoading;
+    private int currentRequestId;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await LoadTask();
+    }
+
+    private async Task LoadTask()
+    {
+        //если пользователь быстро перейдёт между задачами → возможны “перемешанные ответы”
+        //Фикс requestId:
+        var requestId = ++currentRequestId; 
+
+        isLoading = true;
+        
+        var result = await TaskService.GetTaskByIdAsync(Id);
+        
+        if (requestId != currentRequestId)
+            return;
+
+        Task = result;
+
+        isLoading = false;
+    }
+}
