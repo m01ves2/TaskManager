@@ -6,11 +6,9 @@
 
 <h3>Create Task</h3>
 
-<p>Title: @task.Title</p>
-
 <input @bind="task.Title" />
 
-<button @onclick="CreateTask" disabled="@isLoading">
+<button @onclick="CreateTask" disabled="@isLoading || string.IsNullOrWhiteSpace(task.Title)">
     Create
 </button>
 
@@ -24,6 +22,9 @@
 
     private async Task CreateTask()
     {
+        if (string.IsNullOrWhiteSpace(task.Title))
+            return;
+
         if (isLoading) return;
 
         isLoading = true;

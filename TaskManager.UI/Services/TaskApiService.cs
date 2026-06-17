@@ -29,8 +29,9 @@ namespace TaskManager.UI.Services
             var url = $"https://localhost:7191/api/task?page={page}&pageSize={pageSize}";
             var response = await _http.GetAsync(url);
             response.EnsureSuccessStatusCode();
-            return await response.Content.ReadFromJsonAsync<PagedResult<ReadTaskItemDto>>(_jsonSerializerOptions) 
+            var result = await response.Content.ReadFromJsonAsync<PagedResult<ReadTaskItemDto>>(_jsonSerializerOptions) 
                 ?? throw new InvalidOperationException("Response body was empty.");
+            return result;
         }
 
         // 2. Create task
@@ -77,8 +78,9 @@ namespace TaskManager.UI.Services
             var url = $"https://localhost:7191/api/task/deleted";
             var response = await _http.GetAsync(url);
             response.EnsureSuccessStatusCode();
-            return await response.Content.ReadFromJsonAsync<PagedResult<ReadTaskItemDto>>(_jsonSerializerOptions)
+            var result = await response.Content.ReadFromJsonAsync<PagedResult<ReadTaskItemDto>>(_jsonSerializerOptions)
                 ?? throw new InvalidOperationException("Response body was empty.");
+            return result;
         }
 
         // 7. Complete task

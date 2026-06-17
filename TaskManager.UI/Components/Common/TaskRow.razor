@@ -1,26 +1,62 @@
 ﻿@using TaskManager.Features.Tasks.Dtos
 
-<tr>
-    <td>@Task.Id</td>
-    <td>@Task.Title</td>
-    <td>@Task.Status</td>
-    <td>@Task.CreatedAt</td>
-    <td>@Task.UpdatedAt</td>
-    <td>
-        <button class="btn btn-success btn-sm" @onclick="@OnCompleteCallback">Complete</button>
-        <button class="btn btn-danger btn-sm" @onclick="@OnDeleteCallback">Delete</button>
-    </td>
-</tr>
+@if (Task is null) {
+    <tr><td colspan="6">Loading...</td></tr>
+}
+else {
+    <tr @onclick="@OnSelectCallback" style="cursor:pointer">
+        <td>@Task.Id</td>
+        <td>@Task.Title</td>
+        <td>@Task.Status</td>
+        <td>@Task.CreatedAt</td>
+        <td>@Task.UpdatedAt</td>
+        <td>@Task.DeletedAt</td>
+        <td>
+            @if (Task.DeletedAt == null) {
+                <button class="btn btn-success btn-sm"
+                        @onclick:stopPropagation="true"
+                        @onclick="@OnCompleteCallback">
+                    Complete
+                </button>
+                <button class="btn btn-warning btn-sm"
+                        @onclick:stopPropagation="true"
+                        @onclick="@OnDeleteCallback">
+                    Soft Delete
+                </button>
+            }
+            else
+            {
+                <button class="btn btn-success btn-sm"
+                        @onclick:stopPropagation="true"
+                        @onclick="@OnRestoreCallback">
+                    Restore
+                </button>
+                <button class="btn btn-danger btn-sm"
+                        @onclick:stopPropagation="true"
+                        @onclick="@OnDeletePermanentlyCallback">
+                    Delete Permanently
+                </button>
+            }
+        </td>
+    </tr>
+}
 
 @code {
     [Parameter]
     public EventCallback OnCompleteCallback { get; set; }
-    
+
     [Parameter]
     public EventCallback OnDeleteCallback { get; set; }
 
     [Parameter]
-    public ReadTaskItemDto Task { get; set; }
+    public EventCallback OnSelectCallback { get; set; }
 
-    
+    [Parameter]
+    public EventCallback OnRestoreCallback { get; set; }
+
+    [Parameter]
+    public EventCallback OnDeletePermanentlyCallback { get; set; }
+
+    [Parameter]
+    public ReadTaskItemDto? Task { get; set; }
 }
