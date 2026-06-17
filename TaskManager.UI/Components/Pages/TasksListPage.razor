@@ -7,8 +7,11 @@
 
 <h3>Tasks List</h3>
 
-@if (tasks == null) {
-    <p>Loading...</p>
+@if (isLoading) {
+    <p>Loading tasks...</p>
+}
+else if (tasks.Items.Count == 0) {
+    <p>No tasks found</p>
 }
 else {
     @* <button @onclick="Test">
@@ -31,25 +34,36 @@ else {
             }
         </tbody>
     </table>
+    <a href="/tasks/create" class="btn btn-primary">
+        Create Task
+    </a>
 }
 
 @code {
-    private PagedResult<ReadTaskItemDto> tasks;
+    private PagedResult<ReadTaskItemDto> tasks = new();
+    private bool isLoading;
 
     protected override async Task OnInitializedAsync()
     {
-        tasks = await TaskService.GetTasksAsync();
+        await LoadTasks();
     }
 
     private async Task CompleteTask(int id)
     {
         await TaskService.CompleteTaskAsync(id);
-        tasks = await TaskService.GetTasksAsync();
+        await LoadTasks();
     }
 
     private async Task DeleteTask(int id)
     {
         await TaskService.DeleteTaskAsync(id);
+        await LoadTasks();
+    }
+
+    private async Task LoadTasks()
+    {
+        isLoading = true;
         tasks = await TaskService.GetTasksAsync();
+        isLoading = false;
     }
 }

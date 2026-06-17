@@ -63,16 +63,6 @@ namespace TaskManager.UI.Services
                 ?? throw new InvalidOperationException("Response body was empty.");
         }
 
-        //// 5. Soft Delete task
-        //public async Task<ReadTaskItemDto?> DeleteTaskAsync(int id)
-        //{
-        //    var url = $"https://localhost:7191/api/task/{id}";
-        //    var response = await _http.DeleteAsync(url);
-        //    response.EnsureSuccessStatusCode();
-        //    return await response.Content.ReadFromJsonAsync<ReadTaskItemDto>(_jsonSerializerOptions)
-        //        ?? throw new InvalidOperationException("Response body was empty.");
-        //}
-
         // 5. Soft Delete task
         public async Task DeleteTaskAsync(int id)
         {
