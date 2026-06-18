@@ -1,6 +1,7 @@
 # TaskManager API
 
-A simple Task Management system built with ASP.NET Core, EF Core, and Clean Architecture principles.
+A simple task management system built with ASP.NET Core Web API + Blazor UI.
+
 
 ## Features
 
@@ -11,26 +12,42 @@ A simple Task Management system built with ASP.NET Core, EF Core, and Clean Arch
 - Centralized error handling via middleware
 - Swagger API documentation
 
+
 ## Tech Stack
 
 - ASP.NET Core Web API (.NET 8)
 - Entity Framework Core
 - SQLite
 - Swagger / OpenAPI
+- Blazor Server
+- HttpClient + System.Text.Json
+
 
 ## Architecture
 
-- Controller - Service - Repository pattern
-- Business logic in Service layer
-- Data access abstracted via Repository
-- Global exception handling via middleware
+- Backend: ASP.NET Core Web API
+- Frontend: Blazor Server
+- Communication: HttpClient + DTO-based API
+- State management: Component-based UI state
 
-## API
 
-Available via Swagger:
-/swagger
+## Project Structure
 
-## Status
+- TaskManager.API - REST API for task operations
+- TaskManager.UI - Blazor UI application
 
-Project is under active development (learning project).
-UI layer will be added next.
+
+## Learning Goals
+
+This project was built to practice:
+- ASP.NET Core Web API
+- Blazor component architecture
+- Dependency Injection
+- UI state management
+- Clean separation between API and UI
+
+
+# Notes
+
+This is a learning project focused on architecture and fundamentals.
+Business logic is intentionally simple.
