@@ -40,7 +40,8 @@ else {
                          OnCompleteCallback="@(() => CompleteTask(task.Id))"
                          OnDeleteCallback="@(() => DeleteTask(task.Id))"
                          OnRestoreCallback="@(() => RestoreTask(task.Id))"
-                         OnDeletePermanentlyCallback="@(() => DeletePermanently(task.Id))" />
+                         OnDeletePermanentlyCallback="@(() => DeletePermanently(task.Id))"
+                         OnSelectCallback="@(() => TaskDetails(task.Id))" />
             }
         </tbody>
     </table>
